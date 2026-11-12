@@ -91,7 +91,7 @@ export function NotificationBell() {
         <div className="indicator">
           <span className="icon-[tabler--bell] size-5"></span>
           {unreadCount > 0 && (
-            <span className="indicator-item badge badge-primary badge-xs">
+            <span className="indicator-item badge badge-accent badge-xs">
               {unreadCount > 9 ? "9+" : unreadCount}
             </span>
           )}

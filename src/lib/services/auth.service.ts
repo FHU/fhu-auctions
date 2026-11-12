@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { brand } from "@/config/brand";
 import { randomBytes, createHash } from "crypto";
 import { hash } from "bcryptjs";
 import { sendEmail } from "@/lib/email";
@@ -107,7 +108,7 @@ export async function registerUser(input: RegisterInput) {
     await sendEmail({
       to: existingUser.email,
       toName: existingUser.name || undefined,
-      subject: "Account Already Exists - Auktiva",
+      subject: `Account Already Exists - ${brand.appName}`,
       mjmlTemplate: templateData.template,
       replacements: templateData.replacements,
       type: "ACCOUNT_EXISTS",
@@ -208,7 +209,7 @@ export async function requestPasswordReset(email: string): Promise<{
   await sendEmail({
     to: user.email,
     toName: user.name || undefined,
-    subject: "Reset Your Password - Auktiva",
+    subject: `Reset Your Password - ${brand.appName}`,
     mjmlTemplate: templateData.template,
     replacements: templateData.replacements,
     type: "PASSWORD_RESET",
@@ -338,7 +339,7 @@ export async function sendEmailVerification(
   await sendEmail({
     to: email,
     toName: name || undefined,
-    subject: "Verify Your Email - Auktiva",
+    subject: `Verify Your Email - ${brand.appName}`,
     mjmlTemplate: templateData.template,
     replacements: templateData.replacements,
     type: "EMAIL_VERIFICATION",

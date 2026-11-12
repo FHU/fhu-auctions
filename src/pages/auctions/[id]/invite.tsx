@@ -108,10 +108,7 @@ export default function InvitePage({
 
   return (
     <div className="min-h-screen bg-base-100 relative overflow-x-hidden selection:bg-primary/20">
-      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[128px] translate-x-1/3 -translate-y-1/3"></div>
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-secondary/5 rounded-full blur-[128px] -translate-x-1/3 translate-y-1/3"></div>
-      </div>
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden"></div>
 
       <div className="relative z-10">
         <Navbar user={user} />

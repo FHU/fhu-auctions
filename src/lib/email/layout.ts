@@ -1,3 +1,5 @@
+import { brand } from "@/config/brand";
+
 /**
  * HTML-encode a string to prevent XSS in email templates
  * This should be used for all user-provided content in email templates
@@ -11,31 +13,31 @@ export function escapeHtml(unsafe: string): string {
     .replace(/'/g, "&#039;");
 }
 
-// DaisyUI 5 light theme colors (converted from oklch)
+// FHU brand colors (FHU Brand Kit; matches the app's light theme)
 export const theme = {
   colors: {
-    primary: "#422ad5", // DaisyUI primary: oklch(45% 0.24 277.023)
-    primaryContent: "#e0e7ff", // DaisyUI primary-content
-    background: "#fafafa", // DaisyUI base-200
-    surface: "#ffffff", // DaisyUI base-100
+    primary: "#702e3e", // FHU Maroon
+    primaryContent: "#ffffff",
+    gold: "#c6b682", // FHU Gold (accents; text only on maroon)
+    background: "#f1f1f1", // gray-100
+    surface: "#ffffff",
     text: {
-      main: "#1f2937", // DaisyUI base-content
-      muted: "#6b7280", // Gray 500
-      light: "#9ca3af", // Gray 400
+      main: "#333333", // ink
+      muted: "#595d64", // slate
+      light: "#595d64", // slate (kit gray-500 fails contrast)
     },
-    border: "#e5e5e5", // DaisyUI base-300
-    error: "#f87272", // DaisyUI error
+    border: "#cccccc", // gray-300
+    error: "#ba0000",
   },
-  // Border-radius values in px (MJML only supports px/%)
+  // FHU is a square-cornered brand (MJML only supports px/%)
   borderRadius: {
-    sm: "4px", // rounded-sm
-    md: "6px", // rounded-md (buttons)
-    lg: "8px", // rounded-lg (cards, inputs)
-    xl: "12px", // rounded-xl (larger cards)
+    sm: "0px",
+    md: "0px",
+    lg: "0px",
+    xl: "0px",
   },
-  // System font stack similar to Tailwind/DaisyUI default
-  fontFamily:
-    "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+  // Montserrat where installed; most email clients fall back to Helvetica/Arial
+  fontFamily: "Montserrat, Helvetica, Arial, sans-serif",
 };
 
 interface LayoutProps {
@@ -48,7 +50,7 @@ interface LayoutProps {
 export function renderLayout({
   content,
   previewText,
-  title = "Auktiva",
+  title = brand.appName,
   year = "{{YEAR}}",
 }: LayoutProps) {
   return `
@@ -81,6 +83,9 @@ export function renderLayout({
             theme.colors.text.muted
           }" font-size="14px" />
         </mj-attributes>
+        <mj-style inline="inline">
+          .fhu-logo a, .fhu-logo img { color: #ffffff; font-weight: 700; text-decoration: none; }
+        </mj-style>
         <mj-style>
           .header-link { text-decoration: none; color: ${
             theme.colors.primary
@@ -92,21 +97,22 @@ export function renderLayout({
       </mj-head>
       <mj-body background-color="${theme.colors.background}" width="600px">
         
-        <!-- Header -->
-        <mj-section padding="40px 0 24px">
-          <mj-column>
-            <mj-text align="center">
-              <a href="{{APP_URL}}" style="text-decoration: none; font-size: 24px; font-weight: 800; color: ${
-                theme.colors.primary
-              }; letter-spacing: -0.5px;">
-                Auktiva
-              </a>
-            </mj-text>
-          </mj-column>
+        <!-- Header: maroon band, white FHU logo | AUCTIONS, gold bar -->
+        <mj-section background-color="${theme.colors.primary}" padding="20px 24px" border-bottom="4px solid ${theme.colors.gold}">
+          <mj-group>
+            <mj-column width="62%" vertical-align="middle">
+              <mj-image css-class="fhu-logo" src="${brand.siteUrl}/brand/fhu-logo-white.png" alt="${brand.orgName}" href="${brand.siteUrl}" width="200px" align="left" padding="0" />
+            </mj-column>
+            <mj-column width="38%" vertical-align="middle">
+              <mj-text align="right" padding="0" color="${theme.colors.gold}" font-family="'Zilla Slab', Georgia, serif" font-size="22px" font-weight="700" letter-spacing="1px">
+                ${brand.siteLabel.toUpperCase()}
+              </mj-text>
+            </mj-column>
+          </mj-group>
         </mj-section>
         
         <!-- Main Content Card -->
-        <mj-section padding="0 16px">
+        <mj-section padding="24px 16px 0">
           <mj-column background-color="${
             theme.colors.surface
           }" border-radius="${
@@ -122,17 +128,17 @@ export function renderLayout({
             <mj-text align="center" color="${
               theme.colors.text.light
             }" font-size="12px">
-              © ${year} Auktiva.org<br/>
-              Your Private Auction Platform
+              © ${year} ${brand.orgName}<br/>
+              ${brand.postalAddress}
             </mj-text>
             <mj-text align="center" color="${
               theme.colors.text.light
             }" font-size="12px" padding-top="8px">
-              <a href="#" class="footer-link" style="color: ${
+              <a href="${brand.siteUrl}/privacy" class="footer-link" style="color: ${
                 theme.colors.text.light
               }; text-decoration: none;">Privacy Policy</a>
               &nbsp;&nbsp;•&nbsp;&nbsp;
-              <a href="#" class="footer-link" style="color: ${
+              <a href="${brand.siteUrl}/terms" class="footer-link" style="color: ${
                 theme.colors.text.light
               }; text-decoration: none;">Terms of Service</a>
             </mj-text>

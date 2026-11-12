@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "Auktiva",
+    "appName": "FHU Auctions",
     "loading": "Loading...",
     "save": "Save",
     "cancel": "Cancel",
@@ -53,7 +53,8 @@
     "features": "Features",
     "howItWorks": "How it Works",
     "docs": "Docs",
-    "adminPanel": "Auction Admin"
+    "adminPanel": "Auction Admin",
+    "manageUsers": "Manage Users"
   },
   "admin": {
     "title": "Auction Admin",
@@ -118,7 +119,9 @@
     "termsOfService": "Terms of Service",
     "allRightsReserved": "All rights reserved.",
     "designedBy": "Designed & Built by",
-    "description": "A free, open-source auction platform designed for fundraisers, charities, and communities. Built with modern tech for modern events.",
+    "poweredBy": "Powered by <link>Auktiva</link>",
+    "contact": "Contact",
+    "description": "Charity auctions supporting Freed-Hardeman University students, faculty, and staff",
     "reportIssue": "Report Issue",
     "github": "GitHub",
     "changelog": "Changelog"
@@ -201,7 +204,7 @@
   },
   "changelog": {
     "title": "Changelog & Releases",
-    "description": "See what's new in Auktiva and track our development progress",
+    "description": "See what's new in FHU Auctions and track our development progress",
     "currentVersion": "Current Version",
     "latest": "Latest",
     "installed": "Installed",

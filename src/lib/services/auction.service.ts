@@ -44,6 +44,9 @@ export interface CreateAuctionInput {
   defaultAntiSnipe?: boolean;
   defaultAntiSnipeThreshold?: number;
   defaultAntiSnipeExtension?: number;
+  paymentUrl?: string | null;
+  paymentInstructions?: string | null;
+  pickupInstructions?: string | null;
 }
 
 export interface UpdateAuctionInput {
@@ -58,6 +61,9 @@ export interface UpdateAuctionInput {
   defaultAntiSnipe?: boolean;
   defaultAntiSnipeThreshold?: number;
   defaultAntiSnipeExtension?: number;
+  paymentUrl?: string | null;
+  paymentInstructions?: string | null;
+  pickupInstructions?: string | null;
 }
 
 export interface AuctionDetailForPage {
@@ -77,6 +83,9 @@ export interface AuctionDetailForPage {
   defaultAntiSnipe: boolean;
   defaultAntiSnipeThreshold: number;
   defaultAntiSnipeExtension: number;
+  paymentUrl: string | null;
+  paymentInstructions: string | null;
+  pickupInstructions: string | null;
   creator: {
     id: string;
     name: string | null;
@@ -314,6 +323,9 @@ export async function createAuction(
       defaultAntiSnipe: input.defaultAntiSnipe ?? false,
       defaultAntiSnipeThreshold: input.defaultAntiSnipeThreshold ?? 300,
       defaultAntiSnipeExtension: input.defaultAntiSnipeExtension ?? 300,
+      paymentUrl: input.paymentUrl ?? null,
+      paymentInstructions: input.paymentInstructions ?? null,
+      pickupInstructions: input.pickupInstructions ?? null,
       creatorId,
       members: {
         create: {
@@ -370,6 +382,11 @@ export async function updateAuction(
   if (input.defaultAntiSnipeExtension !== undefined) {
     updateData.defaultAntiSnipeExtension = input.defaultAntiSnipeExtension;
   }
+  if (input.paymentUrl !== undefined) updateData.paymentUrl = input.paymentUrl;
+  if (input.paymentInstructions !== undefined)
+    updateData.paymentInstructions = input.paymentInstructions;
+  if (input.pickupInstructions !== undefined)
+    updateData.pickupInstructions = input.pickupInstructions;
 
   return prisma.auction.update({
     where: { id: auctionId },
@@ -639,6 +656,9 @@ export async function getAuctionResultsData(
       description: auction.description,
       endDate: auction.endDate?.toISOString() || null,
       isEnded,
+      paymentUrl: auction.paymentUrl,
+      paymentInstructions: auction.paymentInstructions,
+      pickupInstructions: auction.pickupInstructions,
     },
     winners,
     userWins,

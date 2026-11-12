@@ -10,6 +10,7 @@ import { DurationInput } from "@/components/ui/duration-input";
 import { useToast } from "@/components/ui/toast";
 import { ImageUpload } from "@/components/upload/image-upload";
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
+import { DonorFields, readDonorFields } from "@/components/item";
 import { getMessages, Locale } from "@/i18n";
 import { useTranslations } from "next-intl";
 import { withAuth } from "@/lib/auth/withAuth";
@@ -121,7 +122,8 @@ export default function CreateItemPage({
       minBidNormalized:
         parseFloat(formData.get("minBidNormalized") as string) || undefined,
       minIncrementNormalized:
-        parseFloat(formData.get("minIncrementNormalized") as string) || undefined,
+        parseFloat(formData.get("minIncrementNormalized") as string) ||
+        undefined,
       minBidConstraint: (() => {
         const raw = formData.get("minBidConstraint") as string;
         if (!raw) return undefined;
@@ -136,6 +138,7 @@ export default function CreateItemPage({
       discussionsEnabled: formData.get("discussionsEnabled") === "on",
       isEditableByAdmin: formData.get("isEditableByAdmin") === "on",
       antiSnipeEnabled: formData.get("antiSnipeEnabled") === "on",
+      ...readDonorFields(formData),
       antiSnipeThresholdSeconds: antiSnipeThreshold,
       antiSnipeExtensionSeconds: antiSnipeExtension,
     };
@@ -381,12 +384,28 @@ export default function CreateItemPage({
                       />
                       <label className="label">
                         <span className="label-text-alt text-base-content/60">
-                          Currency profiles: {auctionCurrencyProfiles.map((p) => `${p.name} (${p.symbol})`).join(", ")}
+                          Currency profiles:{" "}
+                          {auctionCurrencyProfiles
+                            .map((p) => `${p.name} (${p.symbol})`)
+                            .join(", ")}
                         </span>
                       </label>
                     </div>
                   )}
                 </div>
+
+                {/* Donor (FHU) */}
+                <div className="divider opacity-50"></div>
+                <DonorFields
+                  errors={{
+                    donorName: fieldErrors.donorName
+                      ? String(fieldErrors.donorName)
+                      : undefined,
+                    donorUrl: fieldErrors.donorUrl
+                      ? String(fieldErrors.donorUrl)
+                      : undefined,
+                  }}
+                />
 
                 {/* Pricing */}
                 <div className="divider opacity-50"></div>
@@ -468,7 +487,7 @@ export default function CreateItemPage({
                   <>
                     <div className="divider opacity-50"></div>
                     <div className="space-y-4">
-                      <h2 className="text-lg font-semibold flex items-center gap-2 text-accent">
+                      <h2 className="text-lg font-semibold flex items-center gap-2 text-secondary">
                         <span className="icon-[tabler--eye] size-5"></span>
                         {tAuction("create.biddingSettings")}
                       </h2>
@@ -529,7 +548,7 @@ export default function CreateItemPage({
                 {/* Comments Settings */}
                 <div className="divider opacity-50"></div>
                 <div className="space-y-4">
-                  <h2 className="text-lg font-semibold flex items-center gap-2 text-accent">
+                  <h2 className="text-lg font-semibold flex items-center gap-2 text-secondary">
                     <span className="icon-[tabler--message-circle] size-5"></span>
                     {tDiscussions("settings")}
                   </h2>
@@ -855,9 +874,8 @@ export const getServerSideProps = withAuth(async (context) => {
     orderBy: { code: "asc" },
   });
 
-  const currencyContext = await auctionCurrencyService.getAuctionCurrencyContext(
-    auctionId,
-  );
+  const currencyContext =
+    await auctionCurrencyService.getAuctionCurrencyContext(auctionId);
 
   return {
     props: {

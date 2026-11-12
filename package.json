@@ -9,11 +9,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/thomsa/auktiva.git"
+    "url": "https://github.com/FHU/fhu-auctions.git"
   },
-  "homepage": "https://github.com/thomsa/auktiva",
+  "homepage": "https://github.com/FHU/fhu-auctions",
   "bugs": {
-    "url": "https://github.com/thomsa/auktiva/issues"
+    "url": "https://github.com/FHU/fhu-auctions/issues"
   },
   "private": true,
   "config": {

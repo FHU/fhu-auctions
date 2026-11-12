@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "Auktiva",
+    "appName": "FHU Auctions",
     "loading": "Lädt...",
     "save": "Speichern",
     "cancel": "Abbrechen",
@@ -104,7 +104,9 @@
     "termsOfService": "Nutzungsbedingungen",
     "allRightsReserved": "Alle Rechte vorbehalten.",
     "designedBy": "Entworfen & entwickelt von",
-    "description": "Eine kostenlose, Open-Source-Auktionsplattform für Spendenaktionen, Wohltätigkeitsorganisationen und Gemeinschaften. Mit moderner Technologie für moderne Events.",
+    "poweredBy": "Betrieben mit <link>Auktiva</link>",
+    "contact": "Kontakt",
+    "description": "Wohltätigkeitsauktionen zur Unterstützung von Studierenden, Lehrenden und Mitarbeitenden der Freed-Hardeman University",
     "reportIssue": "Problem melden",
     "github": "GitHub",
     "changelog": "Änderungsprotokoll"
@@ -187,7 +189,7 @@
   },
   "changelog": {
     "title": "Änderungsprotokoll & Versionen",
-    "description": "Sieh dir die Neuigkeiten in Auktiva an und verfolge unseren Entwicklungsfortschritt",
+    "description": "Sieh dir die Neuigkeiten in FHU Auctions an und verfolge unseren Entwicklungsfortschritt",
     "currentVersion": "Aktuelle Version",
     "latest": "Neueste",
     "installed": "Installiert",

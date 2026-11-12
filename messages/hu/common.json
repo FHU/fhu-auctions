@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "Auktiva",
+    "appName": "FHU Auctions",
     "loading": "Betöltés...",
     "save": "Mentés",
     "cancel": "Mégse",
@@ -104,7 +104,9 @@
     "termsOfService": "Felhasználási feltételek",
     "allRightsReserved": "Minden jog fenntartva.",
     "designedBy": "Tervezte és fejlesztette",
-    "description": "Ingyenes, nyílt forráskódú aukciós platform adománygyűjtésekhez, jótékonysági szervezeteknek és közösségeknek. Modern technológiával, modern eseményekhez.",
+    "poweredBy": "Működteti: <link>Auktiva</link>",
+    "contact": "Kapcsolat",
+    "description": "Jótékonysági aukciók a Freed-Hardeman University hallgatóinak, oktatóinak és munkatársainak támogatására",
     "reportIssue": "Hiba bejelentése",
     "github": "GitHub",
     "changelog": "Változásnapló"
@@ -187,7 +189,7 @@
   },
   "changelog": {
     "title": "Változásnapló és kiadások",
-    "description": "Nézd meg az Auktiva újdonságait és kövesd a fejlesztés menetét",
+    "description": "Nézd meg az FHU Auctions újdonságait és kövesd a fejlesztés menetét",
     "currentVersion": "Jelenlegi verzió",
     "latest": "Legújabb",
     "installed": "Telepítve",

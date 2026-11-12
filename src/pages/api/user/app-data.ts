@@ -2,6 +2,8 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getUserSiteRole } from "@/lib/services/site-role.service";
+import { canCreateAuctions, isSiteAdminRole } from "@/lib/site-roles";
 
 export default async function handler(
   req: NextApiRequest,
@@ -30,10 +32,14 @@ export default async function handler(
     });
 
     const adminAuctionIds = adminMemberships.map((m) => m.auctionId);
+    const siteRole = await getUserSiteRole(session.user.id);
 
     return res.status(200).json({
       isAuctionAdmin: adminAuctionIds.length > 0,
       adminAuctionIds,
+      siteRole,
+      canCreateAuctions: canCreateAuctions(siteRole),
+      isSiteAdmin: isSiteAdminRole(siteRole),
     });
   } catch (error) {
     console.error("Failed to fetch app data:", error);

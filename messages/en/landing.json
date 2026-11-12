@@ -10,8 +10,8 @@
       "demoAlt": "Interactive Demo Preview",
       "bidNow": "Bid Now",
       "showDemo": "Show me a demo",
-      "demoHint": "Click to watch how Auktiva works",
-      "demoTitle": "Auktiva Demo",
+      "demoHint": "Click to watch how FHU Auctions works",
+      "demoTitle": "FHU Auctions Demo",
       "videoNotSupported": "Your browser does not support the video tag.",
       "close": "Close"
     },
@@ -47,7 +47,7 @@
     "useCases": {
       "sectionTitle": "Perfect for",
       "sectionTitleHighlight": "any occasion",
-      "sectionDescription": "Whether you're raising funds for a cause or clearing out your garage, Auktiva makes it simple.",
+      "sectionDescription": "Whether you're raising funds for a cause or clearing out your garage, FHU Auctions makes it simple.",
       "charity": {
         "title": "Charity Fundraisers",
         "description": "Host silent auctions for nonprofits, schools, churches, and community events."
@@ -102,7 +102,7 @@
     },
     "cta": {
       "title": "Ready to start your auction?",
-      "description": "Whether it's a charity fundraiser or a yearly declutter sale, Auktiva is completely free. Open source, no fees, and built for communities.",
+      "description": "Whether it's a charity fundraiser or a yearly declutter sale, FHU Auctions is completely free. Open source, no fees, and built for communities.",
       "getStarted": "Start Free Auction",
       "freeForever": "100% free forever - no fees, no limits",
       "selfHostTitle": "Prefer to self-host?",

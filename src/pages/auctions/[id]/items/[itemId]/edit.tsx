@@ -8,6 +8,7 @@ import * as itemService from "@/lib/services/item.service";
 import { PageLayout, BackLink, ConfirmDialog } from "@/components/common";
 import { ImageUpload } from "@/components/upload/image-upload";
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
+import { DonorFields, readDonorFields } from "@/components/item";
 import { Button } from "@/components/ui/button";
 import { DurationInput } from "@/components/ui/duration-input";
 import { useConfirmDialog } from "@/hooks/ui";
@@ -58,6 +59,9 @@ interface EditItemProps {
     antiSnipeEnabled: boolean;
     antiSnipeThresholdSeconds: number;
     antiSnipeExtensionSeconds: number;
+    donorName: string | null;
+    donorUrl: string | null;
+    showDonor: boolean;
     minBidConstraint?: Record<string, unknown> | null;
     minBidNormalized?: number | null;
     minIncrementNormalized?: number | null;
@@ -141,7 +145,8 @@ export default function EditItemPage({
       minBidNormalized:
         parseFloat(formData.get("minBidNormalized") as string) || undefined,
       minIncrementNormalized:
-        parseFloat(formData.get("minIncrementNormalized") as string) || undefined,
+        parseFloat(formData.get("minIncrementNormalized") as string) ||
+        undefined,
       minBidConstraint: (() => {
         const raw = formData.get("minBidConstraint") as string;
         if (!raw) return undefined;
@@ -153,6 +158,7 @@ export default function EditItemPage({
       })(),
       bidderAnonymous: formData.get("bidderAnonymous") === "on",
       endDate: (formData.get("endDate") as string) || null,
+      ...readDonorFields(formData),
       discussionsEnabled,
       isEditableByAdmin,
       antiSnipeEnabled,
@@ -454,17 +460,34 @@ export default function EditItemPage({
                   />
                   <label className="label">
                     <span className="label-text-alt text-base-content/60">
-                      Currency profiles: {auctionCurrencyProfiles.map((p) => `${p.name} (${p.symbol})`).join(", ")}
+                      Currency profiles:{" "}
+                      {auctionCurrencyProfiles
+                        .map((p) => `${p.name} (${p.symbol})`)
+                        .join(", ")}
                     </span>
                   </label>
                 </div>
               )}
             </div>
 
+            {/* Donor (FHU) */}
+            <div className="divider opacity-50"></div>
+            <DonorFields
+              defaultValues={{
+                donorName: item.donorName,
+                donorUrl: item.donorUrl,
+                showDonor: item.showDonor,
+              }}
+              errors={{
+                donorName: fieldErrors.donorName?.[0],
+                donorUrl: fieldErrors.donorUrl?.[0],
+              }}
+            />
+
             {/* Images */}
             <div className="divider opacity-50"></div>
             <div className="space-y-4">
-              <h2 className="text-lg font-semibold flex items-center gap-2 text-accent">
+              <h2 className="text-lg font-semibold flex items-center gap-2 text-secondary">
                 <span className="icon-[tabler--photo] size-5"></span>
                 {tCreate("images")}
               </h2>
@@ -572,7 +595,7 @@ export default function EditItemPage({
               <>
                 <div className="divider opacity-50"></div>
                 <div className="space-y-4">
-                  <h2 className="text-lg font-semibold flex items-center gap-2 text-accent">
+                  <h2 className="text-lg font-semibold flex items-center gap-2 text-secondary">
                     <span className="icon-[tabler--eye] size-5"></span>
                     {tAuction("create.biddingSettings")}
                   </h2>
@@ -645,7 +668,7 @@ export default function EditItemPage({
             {/* Comments Settings */}
             <div className="divider opacity-50"></div>
             <div className="space-y-4">
-              <h2 className="text-lg font-semibold flex items-center gap-2 text-accent">
+              <h2 className="text-lg font-semibold flex items-center gap-2 text-secondary">
                 <span className="icon-[tabler--message-circle] size-5"></span>
                 {tDiscussions("settings")}
               </h2>
@@ -950,9 +973,8 @@ export const getServerSideProps = withAuth(async (context) => {
     orderBy: { code: "asc" },
   });
 
-  const currencyContext = await auctionCurrencyService.getAuctionCurrencyContext(
-    auctionId,
-  );
+  const currencyContext =
+    await auctionCurrencyService.getAuctionCurrencyContext(auctionId);
 
   return {
     props: {

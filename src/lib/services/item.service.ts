@@ -1,4 +1,6 @@
 import { prisma } from "@/lib/prisma";
+import { brand } from "@/config/brand";
+import { redactDonor } from "@/lib/charity-fields";
 import { getPublicUrl } from "@/lib/storage";
 import { queueNewItemEmails } from "@/lib/email/service";
 import * as notificationService from "./notification.service";
@@ -23,6 +25,8 @@ export interface ItemListItem {
   thumbnailUrl: string | null;
   highestBidderId: string | null;
   userHasBid: boolean;
+  /** Donor credit (null when none, or anonymous and not the viewer's item) */
+  donorName: string | null;
   currency: {
     symbol: string;
   };
@@ -63,6 +67,9 @@ export interface CreateItemInput {
   antiSnipeEnabled?: boolean;
   antiSnipeThresholdSeconds?: number;
   antiSnipeExtensionSeconds?: number;
+  donorName?: string | null;
+  donorUrl?: string | null;
+  showDonor?: boolean;
 }
 
 export interface UpdateItemInput {
@@ -82,6 +89,9 @@ export interface UpdateItemInput {
   antiSnipeEnabled?: boolean;
   antiSnipeThresholdSeconds?: number;
   antiSnipeExtensionSeconds?: number;
+  donorName?: string | null;
+  donorUrl?: string | null;
+  showDonor?: boolean;
 }
 
 export interface ItemWithDetails extends AuctionItem {
@@ -118,6 +128,9 @@ export interface ItemDetailForPage {
   antiSnipeEnabled: boolean;
   antiSnipeThresholdSeconds: number;
   antiSnipeExtensionSeconds: number;
+  donorName: string | null;
+  donorUrl: string | null;
+  showDonor: boolean;
   creator: {
     id: string;
     name: string | null;
@@ -203,6 +216,7 @@ export async function getItemById(
  */
 export async function getItemForDetailPage(
   itemId: string,
+  auctionId: string,
 ): Promise<ItemDetailForPage | null> {
   const item = await prisma.auctionItem.findUnique({
     where: { id: itemId },
@@ -214,7 +228,7 @@ export async function getItemForDetailPage(
     },
   });
 
-  if (!item) return null;
+  if (!item || item.auctionId !== auctionId) return null;
 
   return {
     id: item.id,
@@ -233,6 +247,9 @@ export async function getItemForDetailPage(
     antiSnipeEnabled: item.antiSnipeEnabled,
     antiSnipeThresholdSeconds: item.antiSnipeThresholdSeconds,
     antiSnipeExtensionSeconds: item.antiSnipeExtensionSeconds,
+    donorName: item.donorName,
+    donorUrl: item.donorUrl,
+    showDonor: item.showDonor,
     creator: item.creator,
   };
 }
@@ -410,28 +427,35 @@ export async function getItemDetailPageData(
   const canBid = !isItemOwner && !isItemEnded;
 
   return {
-    item: {
-      id: item.id,
-      name: item.name,
-      description: item.description,
-      currencyCode: item.currencyCode,
-      currency: item.currency,
-      startingBid: item.startingBid,
-      minBidIncrement: item.minBidIncrement,
-      currentBid: item.currentBid,
-      highestBidderId: item.highestBidderId,
-      bidderAnonymous: item.bidderAnonymous,
-      endDate: item.endDate?.toISOString() || null,
-      createdAt: item.createdAt.toISOString(),
-      updatedAt: item.updatedAt.toISOString(),
-      isPublished: item.isPublished,
-      antiSnipeEnabled: item.antiSnipeEnabled,
-      antiSnipeThresholdSeconds: item.antiSnipeThresholdSeconds,
-      antiSnipeExtensionSeconds: item.antiSnipeExtensionSeconds,
-      creatorId: item.creatorId,
-      creator: item.creator,
-      discussionsEnabled: item.discussionsEnabled,
-    },
+    item: redactDonor(
+      {
+        id: item.id,
+        name: item.name,
+        description: item.description,
+        currencyCode: item.currencyCode,
+        currency: item.currency,
+        startingBid: item.startingBid,
+        minBidIncrement: item.minBidIncrement,
+        currentBid: item.currentBid,
+        highestBidderId: item.highestBidderId,
+        bidderAnonymous: item.bidderAnonymous,
+        endDate: item.endDate?.toISOString() || null,
+        createdAt: item.createdAt.toISOString(),
+        updatedAt: item.updatedAt.toISOString(),
+        donorName: item.donorName,
+        donorUrl: item.donorUrl,
+        showDonor: item.showDonor,
+        isPublished: item.isPublished,
+        antiSnipeEnabled: item.antiSnipeEnabled,
+        antiSnipeThresholdSeconds: item.antiSnipeThresholdSeconds,
+        antiSnipeExtensionSeconds: item.antiSnipeExtensionSeconds,
+        creatorId: item.creatorId,
+        creator: item.creator,
+        discussionsEnabled: item.discussionsEnabled,
+      },
+      // Item creator and auction owners/admins always see the donor
+      isItemOwner || isViewerAdmin,
+    ),
     bids,
     images: images.map((img) => ({
       id: img.id,
@@ -494,6 +518,9 @@ export async function getItemForEditPage(
       antiSnipeEnabled: item.antiSnipeEnabled,
       antiSnipeThresholdSeconds: item.antiSnipeThresholdSeconds,
       antiSnipeExtensionSeconds: item.antiSnipeExtensionSeconds,
+      donorName: item.donorName,
+      donorUrl: item.donorUrl,
+      showDonor: item.showDonor,
     },
     hasBids: item._count.bids > 0,
     canEdit,
@@ -512,9 +539,14 @@ export async function getItemForEditPage(
  */
 export async function getAuctionItems(
   auctionId: string,
+  viewerId: string,
 ): Promise<AuctionItem[]> {
   return prisma.auctionItem.findMany({
-    where: { auctionId },
+    // Drafts are only visible to their creator
+    where: {
+      auctionId,
+      OR: [{ isPublished: true }, { creatorId: viewerId }],
+    },
     include: {
       currency: true,
       creator: {
@@ -582,6 +614,8 @@ export async function getAuctionItemsForListPage(
     creatorId: item.creatorId,
     isPublished: item.isPublished,
     thumbnailUrl: item.images[0]?.url ? getPublicUrl(item.images[0].url) : null,
+    donorName:
+      item.showDonor || item.creatorId === userId ? item.donorName : null,
     currency: {
       symbol: item.currency.symbol,
     },
@@ -810,12 +844,6 @@ export async function createItem(
   creatorId: string,
   input: CreateItemInput,
 ) {
-  // Get auction name for notifications
-  const auction = await prisma.auction.findUnique({
-    where: { id: auctionId },
-    select: { name: true },
-  });
-
   const item = await prisma.auctionItem.create({
     data: {
       auctionId,
@@ -834,6 +862,9 @@ export async function createItem(
       antiSnipeEnabled: input.antiSnipeEnabled ?? false,
       antiSnipeThresholdSeconds: input.antiSnipeThresholdSeconds ?? 300,
       antiSnipeExtensionSeconds: input.antiSnipeExtensionSeconds ?? 300,
+      donorName: input.donorName ?? null,
+      donorUrl: input.donorUrl ?? null,
+      showDonor: input.showDonor ?? true,
       creatorId,
       lastUpdatedById: creatorId,
     },
@@ -853,8 +884,34 @@ export async function createItem(
     },
   });
 
+  // Draft items stay private: members are only told about published items
+  // (drafts are announced when they're published; see announceItemPublished)
+  if (item.isPublished) {
+    await announceItemPublished(item.id);
+  }
+
+  return item;
+}
+
+/**
+ * Tell auction members about a newly published item: "new item" emails,
+ * in-app notifications, and the realtime ITEM_CREATED event. Called when an
+ * item is created already published, or when a draft is published later.
+ * Does nothing for items that aren't published.
+ */
+export async function announceItemPublished(itemId: string): Promise<void> {
+  const item = await prisma.auctionItem.findUnique({
+    where: { id: itemId },
+    include: {
+      auction: { select: { name: true } },
+      creator: { select: { name: true } },
+      images: { orderBy: { order: "asc" }, take: 1, select: { url: true } },
+    },
+  });
+  if (!item || !item.isPublished) return;
+
   // Get the first image URL for notifications
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.auktiva.org";
+  const appUrl = brand.siteUrl;
   const firstImageUrl =
     item.images.length > 0
       ? item.images[0].url.startsWith("http")
@@ -868,15 +925,15 @@ export async function createItem(
     itemName: item.name,
     itemDescription: item.description,
     itemImageUrl: firstImageUrl,
-    auctionId,
-    auctionName: auction?.name || "Auction",
-    creatorId,
+    auctionId: item.auctionId,
+    auctionName: item.auction.name || "Auction",
+    creatorId: item.creatorId,
   });
 
   // Send in-app notifications to all auction members (except creator)
   await sendNewItemNotifications(
-    auctionId,
-    creatorId,
+    item.auctionId,
+    item.creatorId,
     item.name,
     item.description,
     firstImageUrl,
@@ -886,21 +943,19 @@ export async function createItem(
   // Publish realtime event for new item (private auction channel - members only)
   const itemCreatedEvent: ItemCreatedEvent = {
     itemId: item.id,
-    auctionId,
+    auctionId: item.auctionId,
     name: item.name,
-    creatorId,
+    creatorId: item.creatorId,
     creatorName: item.creator.name || "Unknown",
     thumbnailUrl: firstImageUrl,
     startingBid: item.startingBid,
     currencyCode: item.currencyCode,
   };
   publish(
-    Channels.privateAuction(auctionId),
+    Channels.privateAuction(item.auctionId),
     Events.ITEM_CREATED,
     itemCreatedEvent,
   );
-
-  return item;
 }
 
 /**
@@ -952,6 +1007,10 @@ export async function updateItem(
   const updateData: Record<string, unknown> = {
     lastUpdatedById: updatedById,
   };
+  const before = await prisma.auctionItem.findUnique({
+    where: { id: itemId },
+    select: { isPublished: true },
+  });
 
   // Always allowed updates
   if (input.name !== undefined) updateData.name = input.name;
@@ -988,6 +1047,9 @@ export async function updateItem(
   if (input.antiSnipeExtensionSeconds !== undefined) {
     updateData.antiSnipeExtensionSeconds = input.antiSnipeExtensionSeconds;
   }
+  if (input.donorName !== undefined) updateData.donorName = input.donorName;
+  if (input.donorUrl !== undefined) updateData.donorUrl = input.donorUrl;
+  if (input.showDonor !== undefined) updateData.showDonor = input.showDonor;
 
   // Only allow these if no bids
   if (!hasBids) {
@@ -1006,7 +1068,7 @@ export async function updateItem(
     }
   }
 
-  return prisma.auctionItem.update({
+  const updated = await prisma.auctionItem.update({
     where: { id: itemId },
     data: updateData,
     include: {
@@ -1016,6 +1078,13 @@ export async function updateItem(
       },
     },
   });
+
+  // A draft was just published: now tell auction members about it
+  if (before && !before.isPublished && updated.isPublished) {
+    await announceItemPublished(itemId);
+  }
+
+  return updated;
 }
 
 /**
@@ -1209,6 +1278,7 @@ export async function bulkUpdateItems(
     select: {
       id: true,
       name: true,
+      isPublished: true,
       _count: { select: { bids: true } },
     },
   });
@@ -1272,6 +1342,9 @@ export async function bulkUpdateItems(
         data: itemUpdateData,
       });
       updated++;
+      if (!item.isPublished && itemUpdateData.isPublished === true) {
+        await announceItemPublished(item.id);
+      }
     }
   }
 

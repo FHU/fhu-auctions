@@ -7,12 +7,12 @@
 import nodemailer from "nodemailer";
 import type { Transporter } from "nodemailer";
 import { createLogger } from "@/lib/logger";
+import { getMailFrom } from "@/config/brand";
 import type { EmailProvider, EmailMessage, EmailSendResult } from "./types";
 
 const logger = createLogger("email:smtp");
 
-const MAIL_FROM = process.env.MAIL_FROM || "noreply@auktiva.org";
-const MAIL_FROM_NAME = process.env.MAIL_FROM_NAME || "Auktiva.org";
+const { email: MAIL_FROM, name: MAIL_FROM_NAME } = getMailFrom();
 
 export class SmtpProvider implements EmailProvider {
   private transporter: Transporter;

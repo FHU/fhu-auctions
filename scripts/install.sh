@@ -3,7 +3,7 @@
 # =============================================================================
 # Auktiva Installation Script
 # =============================================================================
-# Usage: curl -fsSL https://raw.githubusercontent.com/thomsa/auktiva/main/scripts/install.sh | bash
+# Usage: curl -fsSL https://raw.githubusercontent.com/FHU/fhu-auctions/main/scripts/install.sh | bash
 # =============================================================================
 
 set -e
@@ -40,8 +40,11 @@ print_info() {
   echo -e "${BLUE}ℹ${NC} $1"
 }
 
+# GitHub repository to install from ("owner/repo")
+REPO_SLUG="${AUKTIVA_REPO:-FHU/fhu-auctions}"
+
 get_latest_release_tag() {
-  curl -fsSL "https://api.github.com/repos/thomsa/auktiva/releases/latest" 2>/dev/null | \
+  curl -fsSL "https://api.github.com/repos/${REPO_SLUG}/releases/latest" 2>/dev/null | \
     grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/'
 }
 
@@ -172,7 +175,7 @@ main() {
 
   if [ ! -d "$INSTALL_DIR" ]; then
     print_info "Downloading Auktiva ${VERSION}..."
-    git clone -c advice.detachedHead=false --branch "$GIT_REF" --depth 1 --quiet https://github.com/thomsa/auktiva.git "$INSTALL_DIR" 2>/dev/null
+    git clone -c advice.detachedHead=false --branch "$GIT_REF" --depth 1 --quiet "https://github.com/${REPO_SLUG}.git" "$INSTALL_DIR" 2>/dev/null
     print_success "Downloaded ${VERSION} to $INSTALL_DIR"
   fi
 

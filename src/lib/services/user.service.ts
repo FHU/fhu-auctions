@@ -129,7 +129,8 @@ export async function getUserSettingsWithDefaults(userId: string): Promise<{
   return {
     emailOnNewItem: settings?.emailOnNewItem ?? false,
     emailOnOutbid: settings?.emailOnOutbid ?? false,
-    emailOnItemWon: settings?.emailOnItemWon ?? false,
+    // On by default: the winner email carries payment & pickup instructions
+    emailOnItemWon: settings?.emailOnItemWon ?? true,
     itemSidebarCollapsed: settings?.itemSidebarCollapsed ?? false,
   };
 }
@@ -224,7 +225,7 @@ export async function updateUserSettings(
       userId,
       emailOnNewItem: input.emailOnNewItem ?? false,
       emailOnOutbid: input.emailOnOutbid ?? false,
-      emailOnItemWon: input.emailOnItemWon ?? false,
+      emailOnItemWon: input.emailOnItemWon ?? true,
       itemSidebarCollapsed: input.itemSidebarCollapsed ?? false,
     },
     update: {

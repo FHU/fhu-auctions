@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import * as itemService from "@/lib/services/item.service";
 import { z } from "zod";
 
 const bulkUpdateSchema = z.object({
@@ -65,6 +66,7 @@ export default async function handler(
         name: true,
         creatorId: true,
         isEditableByAdmin: true,
+        isPublished: true,
         _count: { select: { bids: true } },
       },
     });
@@ -172,6 +174,9 @@ export default async function handler(
           data: itemUpdateData,
         });
         updated++;
+        if (!item.isPublished && itemUpdateData.isPublished === true) {
+          await itemService.announceItemPublished(item.id);
+        }
       }
     }
 

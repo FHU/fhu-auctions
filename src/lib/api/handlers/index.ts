@@ -11,6 +11,7 @@ export * as userHandlers from "./user.handlers";
 export * as notificationHandlers from "./notification.handlers";
 export * as systemHandlers from "./system.handlers";
 export * as discussionHandlers from "./discussion.handlers";
+export * as siteAdminHandlers from "./site-admin.handlers";
 
 // Re-export schemas for convenience
 export {
@@ -55,6 +56,11 @@ export {
   updateSystemSettingsSchema,
   type UpdateSystemSettingsBody,
 } from "./system.handlers";
+
+export {
+  updateSiteRoleSchema,
+  type UpdateSiteRoleBody,
+} from "./site-admin.handlers";
 
 export {
   createDiscussionSchema,

@@ -7,6 +7,7 @@ import {
 import type { ApiHandler } from "@/lib/api";
 import { prisma } from "@/lib/prisma";
 import { formatAuctionBidDisplay } from "@/lib/currency-display";
+import { csvCell } from "@/lib/csv/csv-cell";
 
 const exportAuction: ApiHandler = async (req, res, ctx) => {
   const auctionId = ctx.params.id;
@@ -60,6 +61,9 @@ const exportAuction: ApiHandler = async (req, res, ctx) => {
       description: auction.description,
       endDate: auction.endDate?.toISOString() || null,
       createdAt: auction.createdAt.toISOString(),
+      paymentUrl: auction.paymentUrl,
+      paymentInstructions: auction.paymentInstructions,
+      pickupInstructions: auction.pickupInstructions,
     },
     summary: {
       totalItems: auction.items.length,
@@ -75,6 +79,9 @@ const exportAuction: ApiHandler = async (req, res, ctx) => {
       id: item.id,
       name: item.name,
       description: item.description,
+      donorName: item.donorName,
+      donorUrl: item.donorUrl,
+      showDonor: item.showDonor,
       currency: item.currency.code,
       currencySymbol: item.currency.symbol,
       startingBid: item.startingBid,
@@ -109,6 +116,9 @@ const exportAuction: ApiHandler = async (req, res, ctx) => {
     const csvRows = [
       [
         "Item Name",
+        "Donor",
+        "Donor Website",
+        "Donor Shown To Bidders",
         "Currency",
         "Starting Bid",
         "Winning Bid",
@@ -120,17 +130,18 @@ const exportAuction: ApiHandler = async (req, res, ctx) => {
       ].join(","),
       ...exportData.items.map((item) =>
         [
-          `"${item.name.replace(/"/g, '""')}"`,
-          item.currency,
-          item.startingBid,
-          item.currentBid || 0,
-          item.winner ? `"${item.winner.displayRepresentation}"` : "",
-          item.winner?.normalizedAmount ?? "",
-          item.winner
-            ? `"${(item.winner.name || "").replace(/"/g, '""')}"`
-            : "",
-          item.winner ? `"${item.winner.email}"` : "",
-          item.bidCount,
+          csvCell(item.name),
+          csvCell(item.donorName),
+          csvCell(item.donorUrl),
+          csvCell(item.showDonor ? "Yes" : "No"),
+          csvCell(item.currency),
+          csvCell(item.startingBid),
+          csvCell(item.currentBid || 0),
+          csvCell(item.winner?.displayRepresentation),
+          csvCell(item.winner?.normalizedAmount),
+          csvCell(item.winner?.name),
+          csvCell(item.winner?.email),
+          csvCell(item.bidCount),
         ].join(","),
       ),
     ];

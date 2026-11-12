@@ -22,9 +22,10 @@ import {
   getItemWonTemplateData,
 } from "./templates";
 import { createLogger } from "@/lib/logger";
+import { brand } from "@/config/brand";
 
 const emailServiceLogger = createLogger("email-service");
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://www.auktiva.org";
+const APP_URL = brand.siteUrl;
 
 /**
  * Environment info:
@@ -62,7 +63,7 @@ export async function queueWelcomeEmail(params: {
     const result = await sendEmail({
       to: email,
       toName: name,
-      subject: "Welcome to Auktiva! 🎉",
+      subject: `Welcome to ${brand.appName}! 🎉`,
       mjmlTemplate: templateData.template,
       replacements: templateData.replacements,
       type: "WELCOME",
@@ -113,7 +114,7 @@ export async function queueInviteEmail(params: {
 
     const result = await sendEmail({
       to: email,
-      subject: `You're invited to "${auctionName}" on Auktiva`,
+      subject: `You're invited to "${auctionName}" on ${brand.appName}`,
       mjmlTemplate: templateData.template,
       replacements: templateData.replacements,
       type: "INVITE",
@@ -342,8 +343,14 @@ export async function queueItemWonEmail(params: {
   winningAmount: number;
   currencySymbol: string;
   normalizedAmount?: number;
+  paymentUrl?: string | null;
+  paymentInstructions?: string | null;
+  pickupInstructions?: string | null;
 }): Promise<boolean> {
   const {
+    paymentUrl,
+    paymentInstructions,
+    pickupInstructions,
     winnerId,
     winnerEmail,
     winnerName,
@@ -368,11 +375,12 @@ export async function queueItemWonEmail(params: {
       select: { emailOnItemWon: true },
     });
 
-    // Default is false for this notification type
-    if (userSettings?.emailOnItemWon !== true) {
+    // On by default (FHU): only skip users who explicitly turned it off.
+    // Users without a settings row get the email.
+    if (userSettings?.emailOnItemWon === false) {
       emailServiceLogger.debug(
         { itemId, winnerId },
-        "User has not enabled item won notifications, skipping",
+        "User turned off item won notifications, skipping",
       );
       return true; // Not an error, just skipped
     }
@@ -386,6 +394,9 @@ export async function queueItemWonEmail(params: {
       currencySymbol,
       normalizedAmount,
       appUrl: APP_URL,
+      paymentUrl,
+      paymentInstructions,
+      pickupInstructions,
     });
 
     const result = await sendEmail({

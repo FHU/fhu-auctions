@@ -45,12 +45,10 @@ export function UserAvatar({
 
   return (
     <div
-      className={`rounded-full bg-linear-to-br from-primary to-secondary p-[2px] shrink-0 ${sizeClasses[size]} ${className}`}
+      className={`rounded-full bg-primary p-[2px] shrink-0 ${sizeClasses[size]} ${className}`}
     >
       <div className="w-full h-full rounded-full bg-base-100 flex items-center justify-center">
-        <span className="font-bold bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent">
-          {initials}
-        </span>
+        <span className="font-bold text-primary">{initials}</span>
       </div>
     </div>
   );

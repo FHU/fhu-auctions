@@ -4,7 +4,9 @@ import { useTheme } from "@/components/providers/theme-provider";
 import { NotificationBell } from "@/components/notifications/notification-bell";
 import { MobileNotificationSheet } from "@/components/notifications/mobile-notification-sheet";
 import { UserAvatar } from "@/components/ui/user-avatar";
+import { BrandLockup } from "@/components/common/BrandLockup";
 import packageJson from "../../../package.json";
+import { brand, supportMailto } from "@/config/brand";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useNotifications } from "@/contexts/NotificationContext";
@@ -22,67 +24,48 @@ export function Navbar({ user }: NavbarProps) {
   const t = useTranslations("nav");
   const tCommon = useTranslations("common");
   const { setTheme, resolvedTheme } = useTheme();
-  const [scrolled, setScrolled] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [mobileNotificationsOpen, setMobileNotificationsOpen] = useState(false);
 
   const { unreadCount } = useNotifications();
-  const { isUserAuctionAdmin } = useAppContext();
+  const { isUserAuctionAdmin, isSiteAdmin } = useAppContext();
 
   useEffect(() => {
     // This is an intentional hydration pattern to prevent SSR mismatch
     setMounted(true); // eslint-disable-line
   }, []);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   return (
-    <nav
-      className={`sticky top-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-base-100/80 backdrop-blur-lg border-b border-base-content/5 py-2 shadow-sm"
-          : "bg-base-100/0 border-b border-transparent py-4"
-      }`}
-    >
+    <nav className="sticky top-0 z-50 bg-fhu-maroon text-white border-b-4 border-fhu-gold py-2">
       <div className="container mx-auto px-4 flex items-center justify-between">
         <div className="flex items-center gap-8">
           <Link
             href="/dashboard"
-            className="group flex items-center gap-2 text-xl font-bold tracking-tight"
+            aria-label={tCommon("appName")}
+            className="focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
           >
-            <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-colors">
-              <span className="icon-[tabler--gavel] size-6 text-primary transition-transform group-hover:-rotate-12 duration-300"></span>
-            </div>
-            <span className="bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent">
-              {tCommon("appName")}
-            </span>
+            <BrandLockup variant="white" />
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-1">
             <Link
               href="/dashboard"
-              className="btn btn-ghost btn-sm font-medium text-base-content/70 hover:text-primary hover:bg-primary/10 gap-1.5"
+              className="btn btn-ghost btn-sm font-semibold text-white hover:text-fhu-gold hover:bg-white/10 border-none gap-1.5"
             >
               <span className="icon-[tabler--layout-dashboard] size-4"></span>
               {t("dashboard")}
             </Link>
             <Link
               href="/listings"
-              className="btn btn-ghost btn-sm font-medium text-base-content/70 hover:text-primary hover:bg-primary/10 gap-1.5"
+              className="btn btn-ghost btn-sm font-semibold text-white hover:text-fhu-gold hover:bg-white/10 border-none gap-1.5"
             >
               <span className="icon-[tabler--tag] size-4"></span>
               {t("myListings")}
             </Link>
             <Link
               href="/history"
-              className="btn btn-ghost btn-sm font-medium text-base-content/70 hover:text-primary hover:bg-primary/10 gap-1.5"
+              className="btn btn-ghost btn-sm font-semibold text-white hover:text-fhu-gold hover:bg-white/10 border-none gap-1.5"
             >
               <span className="icon-[tabler--gavel] size-4"></span>
               {t("myBids")}
@@ -90,7 +73,7 @@ export function Navbar({ user }: NavbarProps) {
             {isUserAuctionAdmin && (
               <Link
                 href="/auctions/admin"
-                className="btn btn-ghost btn-sm font-medium text-warning hover:text-warning hover:bg-warning/10 gap-1.5"
+                className="btn btn-ghost btn-sm font-semibold text-fhu-gold hover:text-white hover:bg-white/10 border-none gap-1.5"
               >
                 <span className="icon-[tabler--shield-check] size-4"></span>
                 {t("adminPanel")}
@@ -102,13 +85,13 @@ export function Navbar({ user }: NavbarProps) {
         {/* Mobile Notification Bell */}
         <button
           onClick={() => setMobileNotificationsOpen(true)}
-          className="md:hidden btn btn-ghost btn-sm btn-circle"
+          className="md:hidden btn btn-ghost btn-sm btn-circle text-white hover:bg-white/10 border-none"
           aria-label={t("notifications")}
         >
           <div className="indicator">
             <span className="icon-[tabler--bell] size-6"></span>
             {unreadCount > 0 && (
-              <span className="indicator-item badge badge-primary badge-xs">
+              <span className="indicator-item badge badge-accent badge-xs">
                 {unreadCount > 9 ? "9+" : unreadCount}
               </span>
             )}
@@ -117,14 +100,14 @@ export function Navbar({ user }: NavbarProps) {
 
         <div className="hidden md:flex items-center gap-3">
           {/* Notifications */}
-          <div className="btn btn-ghost btn-circle btn-sm hover:bg-base-content/5">
+          <div className="btn btn-ghost btn-circle btn-sm text-white hover:bg-white/10 border-none">
             <NotificationBell />
           </div>
 
           {/* Theme Toggle */}
           {mounted && (
             <button
-              className="btn btn-ghost btn-circle btn-sm hover:bg-base-content/5 transition-transform hover:rotate-12"
+              className="btn btn-ghost btn-circle btn-sm text-white hover:bg-white/10 border-none"
               onClick={() =>
                 setTheme(resolvedTheme === "light" ? "dark" : "light")
               }
@@ -142,14 +125,14 @@ export function Navbar({ user }: NavbarProps) {
           <div className="dropdown dropdown-end ml-2">
             <button
               tabIndex={0}
-              className="group flex items-center gap-2 pl-1 pr-2 py-1 rounded-full hover:bg-base-content/5 transition-all cursor-pointer ring-offset-2 focus:ring-2 focus:ring-primary/20 outline-none"
+              className="group flex items-center gap-2 pl-1 pr-2 py-1 hover:bg-white/10 transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
             >
               <UserAvatar name={user.name} email={user.email} size="sm" />
-              <span className="icon-[tabler--chevron-down] size-4 text-base-content/40 group-hover:text-base-content/60 transition-colors"></span>
+              <span className="icon-[tabler--chevron-down] size-4 text-white/70 group-hover:text-white transition-colors"></span>
             </button>
             <ul
               tabIndex={0}
-              className="menu menu-sm dropdown-content bg-base-100/90 backdrop-blur-xl rounded-2xl z-50 mt-4 w-60 p-2 shadow-2xl shadow-primary/5 border border-base-content/5 transform origin-top-right transition-all"
+              className="menu menu-sm dropdown-content bg-base-100 text-base-content z-50 mt-4 w-60 p-2 border border-base-300 border-t-4 border-t-fhu-gold transform origin-top-right transition-all"
             >
               <li className="menu-title px-4 py-3 border-b border-base-content/5 mb-2">
                 <span className="text-xs font-semibold text-primary block mb-0.5">
@@ -197,30 +180,45 @@ export function Navbar({ user }: NavbarProps) {
                   </Link>
                 </li>
               )}
+              {isSiteAdmin && (
+                <li>
+                  <Link
+                    href="/admin/users"
+                    className="active:bg-primary/10 active:text-primary"
+                  >
+                    <span className="icon-[tabler--users] size-4 opacity-70"></span>
+                    {t("manageUsers")}
+                  </Link>
+                </li>
+              )}
               <div className="divider my-1 opacity-50"></div>
-              <li>
-                <a
-                  href="https://docs.auktiva.org/users"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="active:bg-primary/10 active:text-primary"
-                >
-                  <span className="icon-[tabler--book] size-4 opacity-70"></span>
-                  {t("documentation")}
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://github.com/thomsa/auktiva/issues/new/choose"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="active:bg-primary/10 active:text-primary"
-                >
-                  <span className="icon-[tabler--message-report] size-4 opacity-70"></span>
-                  {t("feedback")}
-                </a>
-              </li>
-              <div className="divider my-1 opacity-50"></div>
+              {brand.helpUrl && (
+                <li>
+                  <a
+                    href={brand.helpUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="active:bg-primary/10 active:text-primary"
+                  >
+                    <span className="icon-[tabler--book] size-4 opacity-70"></span>
+                    {t("documentation")}
+                  </a>
+                </li>
+              )}
+              {supportMailto && (
+                <li>
+                  <a
+                    href={supportMailto}
+                    className="active:bg-primary/10 active:text-primary"
+                  >
+                    <span className="icon-[tabler--mail] size-4 opacity-70"></span>
+                    {t("feedback")}
+                  </a>
+                </li>
+              )}
+              {(brand.helpUrl || supportMailto) && (
+                <div className="divider my-1 opacity-50"></div>
+              )}
               <li>
                 <button
                   onClick={() => signOut({ callbackUrl: "/login" })}

@@ -164,6 +164,19 @@
       "title": "No items yet",
       "description": "This auction doesn't have any items listed yet.",
       "createFirst": "Add First Item"
+    },
+    "donor": {
+      "sectionTitle": "Donor",
+      "sectionDescription": "Credit the person or business who donated this item. It's included in the auction export for FHU Advancement.",
+      "donorName": "Donated by",
+      "donorNamePlaceholder": "e.g. Main Street Bakery",
+      "donorUrl": "Donor website",
+      "donorUrlPlaceholder": "https://",
+      "donorUrlHint": "Optional. Must start with https://",
+      "showDonor": "Show the donor to bidders",
+      "showDonorDescription": "Turn off for anonymous donors. They're still recorded for the organizer and the export.",
+      "donatedBy": "Donated by",
+      "hiddenFromBidders": "Hidden from bidders"
     }
   }
 }

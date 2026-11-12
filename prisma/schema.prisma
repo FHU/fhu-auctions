@@ -14,6 +14,14 @@ datasource db {
 // USER & AUTHENTICATION
 // ============================================
 
+// Site-wide role, separate from per-auction MemberRole.
+// Emails in SITE_ADMIN_EMAILS are always treated as SITE_ADMIN.
+enum SiteRole {
+  USER        // Can join auctions and bid
+  ORGANIZER   // Can also create auctions
+  SITE_ADMIN  // Can also grant and revoke site roles
+}
+
 model User {
   id            String    @id @default(cuid())
   email         String    @unique
@@ -23,6 +31,7 @@ model User {
   emailVerified DateTime? // When email was verified (null = unverified)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+  siteRole      SiteRole  @default(USER) // Site-wide role (FHU: who may create auctions)
 
   // Relations
   accounts                  Account[]
@@ -82,7 +91,7 @@ model UserSettings {
   // Email Notification Preferences
   emailOnNewItem        Boolean  @default(false)  // Notify when new item added to auction
   emailOnOutbid         Boolean  @default(false)  // Notify when outbid
-  emailOnItemWon        Boolean  @default(false)  // Notify when user wins an item
+  emailOnItemWon        Boolean  @default(true)   // Notify when user wins an item (FHU: on by default; carries payment instructions)
   
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
@@ -155,6 +164,11 @@ model Auction {
   defaultAntiSnipe             Boolean  @default(false)   // Whether new items get anti-snipe by default
   defaultAntiSnipeThreshold    Int      @default(300)     // Seconds before end that triggers extension (60-3600)
   defaultAntiSnipeExtension    Int      @default(300)     // Seconds to extend by (5-3600)
+
+  // Payment & pickup (FHU: settlement happens offline; shown to bidders and winners)
+  paymentUrl          String?   // e.g. an FHU giving page for this auction
+  paymentInstructions String?   // Plain text, newlines preserved
+  pickupInstructions  String?   // Plain text, newlines preserved
   
   // Metadata
   createdAt         DateTime          @default(now())
@@ -373,6 +387,11 @@ model AuctionItem {
   
   // Discussions
   discussionsEnabled Boolean   @default(true)  // Admin/creator can toggle
+
+  // Donor credit (FHU). Recorded for Advancement even when hidden publicly.
+  donorName       String?
+  donorUrl        String?
+  showDonor       Boolean   @default(true)  // false = anonymous to bidders
   
   // Relations
   images          AuctionItemImage[]

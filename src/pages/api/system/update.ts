@@ -7,6 +7,7 @@ import { exec } from "child_process";
 import { promisify } from "util";
 import path from "path";
 import fs from "fs";
+import { getReleasesRepo, isHostedDeployment } from "@/lib/release-source";
 
 const execAsync = promisify(exec);
 
@@ -27,9 +28,15 @@ export default async function handler(
   }
 
   // Disable on hosted deployments
-  const isHosted = !!process.env.VERCEL || process.env.HOSTED === "true";
-  if (isHosted) {
+  if (isHostedDeployment()) {
     updateLogger.warn("Update attempted on hosted deployment");
+    return res.status(403).json({ success: false });
+  }
+
+  // Disable when no releases repo is configured
+  const releasesRepo = getReleasesRepo();
+  if (!releasesRepo) {
+    updateLogger.warn("Update attempted but RELEASES_REPO is not set");
     return res.status(403).json({ success: false });
   }
 
@@ -92,6 +99,7 @@ export default async function handler(
       env: {
         ...process.env,
         AUKTIVA_UPDATE: "true",
+        RELEASES_REPO: releasesRepo,
       },
     });
 

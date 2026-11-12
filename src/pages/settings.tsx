@@ -8,9 +8,19 @@ import { Button } from "@/components/ui/button";
 import { getMessages, Locale } from "@/i18n";
 import { useTranslations } from "next-intl";
 import { LanguageSelect } from "@/components/ui/language-select";
+import { locales } from "@/i18n/config";
 import { createLogger } from "@/lib/logger";
 import { useToast } from "@/components/ui/toast";
 import { withAuth } from "@/lib/auth/withAuth";
+import {
+  changelogUrl as getChangelogUrl,
+  isHostedDeployment as getIsHostedDeployment,
+  isUpdateCheckEnabled,
+  releasesApiUrl,
+} from "@/lib/release-source";
+import { brand, supportMailto } from "@/config/brand";
+import Link from "next/link";
+import { useAppContext } from "@/contexts/AppContext";
 
 const settingsLogger = createLogger("settings");
 
@@ -46,6 +56,7 @@ interface SettingsPageProps {
   hasDeploymentAdmin: boolean;
   versionInfo: VersionInfo | null;
   isHostedDeployment: boolean;
+  changelogUrl: string | null;
 }
 
 export default function SettingsPage({
@@ -59,9 +70,11 @@ export default function SettingsPage({
   hasDeploymentAdmin: initialHasDeploymentAdmin,
   versionInfo,
   isHostedDeployment,
+  changelogUrl,
 }: SettingsPageProps) {
   const { theme, setTheme } = useTheme();
   const t = useTranslations("settings");
+  const { isSiteAdmin } = useAppContext();
   const tErrors = useTranslations("errors");
 
   // Profile form state
@@ -466,7 +479,7 @@ export default function SettingsPage({
     <PageLayout user={user} maxWidth="2xl">
       <SEO title={t("seo.title")} description={t("seo.description")} />
       <div className="mb-10">
-        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight bg-linear-to-r from-base-content to-base-content/60 bg-clip-text text-transparent mb-2">
+        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2">
           {t("title")}
         </h1>
         <p className="text-base-content/60 text-lg">{t("subtitle")}</p>
@@ -748,7 +761,7 @@ export default function SettingsPage({
       <div className="card bg-base-100/50 backdrop-blur-sm border border-base-content/5 shadow-xl mb-8">
         <div className="card-body">
           <h2 className="card-title flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center text-accent">
+            <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center text-secondary">
               <span className="icon-[tabler--mail] size-6"></span>
             </div>
             {t("emailNotifications.title")}
@@ -831,29 +844,31 @@ export default function SettingsPage({
         </div>
       </div>
 
-      {/* Language Section */}
-      <div className="card bg-base-100/50 backdrop-blur-sm border border-base-content/5 shadow-xl mb-8">
-        <div className="card-body">
-          <h2 className="card-title flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-info/10 flex items-center justify-center text-info">
-              <span className="icon-[tabler--language] size-6"></span>
-            </div>
-            {t("language.title")}
-          </h2>
+      {/* Language Section (hidden when only one locale is enabled) */}
+      {locales.length > 1 && (
+        <div className="card bg-base-100/50 backdrop-blur-sm border border-base-content/5 shadow-xl mb-8">
+          <div className="card-body">
+            <h2 className="card-title flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-xl bg-info/10 flex items-center justify-center text-info">
+                <span className="icon-[tabler--language] size-6"></span>
+              </div>
+              {t("language.title")}
+            </h2>
 
-          <div className="form-control mt-2">
-            <label className="label">
-              <span className="label-text font-medium">
-                {t("language.selectLanguage")}
-              </span>
-            </label>
-            <p className="text-sm text-base-content/60 mb-4">
-              {t("language.languageDescription")}
-            </p>
-            <LanguageSelect />
+            <div className="form-control mt-2">
+              <label className="label">
+                <span className="label-text font-medium">
+                  {t("language.selectLanguage")}
+                </span>
+              </label>
+              <p className="text-sm text-base-content/60 mb-4">
+                {t("language.languageDescription")}
+              </p>
+              <LanguageSelect />
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Appearance Section */}
       <div className="card bg-base-100/50 backdrop-blur-sm border border-base-content/5 shadow-xl mb-8">
@@ -986,15 +1001,17 @@ export default function SettingsPage({
                       )}
                     </div>
                     <div className="flex items-center gap-2 mt-4">
-                      <a
-                        href="https://github.com/thomsa/auktiva/blob/main/CHANGELOG.md"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn btn-ghost btn-sm"
-                      >
-                        <span className="icon-[tabler--file-text] size-4" />
-                        {t("deploymentAdmin.viewChangelog")}
-                      </a>
+                      {changelogUrl && (
+                        <a
+                          href={changelogUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn btn-ghost btn-sm"
+                        >
+                          <span className="icon-[tabler--file-text] size-4" />
+                          {t("deploymentAdmin.viewChangelog")}
+                        </a>
+                      )}
                       {versionInfo.updateAvailable && (
                         <Button
                           onClick={handleUpdate}
@@ -1098,29 +1115,41 @@ export default function SettingsPage({
           </h2>
 
           <div className="space-y-2">
-            <a
-              href="https://docs.auktiva.org/users"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-3 p-3 rounded-xl bg-base-200/50 hover:bg-base-200 transition-colors"
-            >
-              <span className="icon-[tabler--book] size-5 text-primary"></span>
-              <span className="font-medium">
-                {t("quickLinks.documentation")}
-              </span>
-              <span className="icon-[tabler--external-link] size-4 ml-auto text-base-content/40"></span>
-            </a>
+            {isSiteAdmin && (
+              <Link
+                href="/admin/users"
+                className="flex items-center gap-3 p-3 rounded-xl bg-base-200/50 hover:bg-base-200 transition-colors"
+              >
+                <span className="icon-[tabler--users] size-5 text-primary"></span>
+                <span className="font-medium">
+                  {t("quickLinks.manageUsers")}
+                </span>
+              </Link>
+            )}
+            {brand.helpUrl && (
+              <a
+                href={brand.helpUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 p-3 rounded-xl bg-base-200/50 hover:bg-base-200 transition-colors"
+              >
+                <span className="icon-[tabler--book] size-5 text-primary"></span>
+                <span className="font-medium">
+                  {t("quickLinks.documentation")}
+                </span>
+                <span className="icon-[tabler--external-link] size-4 ml-auto text-base-content/40"></span>
+              </a>
+            )}
 
-            <a
-              href="https://github.com/thomsa/auktiva/issues/new/choose"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-3 p-3 rounded-xl bg-base-200/50 hover:bg-base-200 transition-colors"
-            >
-              <span className="icon-[tabler--message-report] size-5 text-secondary"></span>
-              <span className="font-medium">{t("quickLinks.feedback")}</span>
-              <span className="icon-[tabler--external-link] size-4 ml-auto text-base-content/40"></span>
-            </a>
+            {supportMailto && (
+              <a
+                href={supportMailto}
+                className="flex items-center gap-3 p-3 rounded-xl bg-base-200/50 hover:bg-base-200 transition-colors"
+              >
+                <span className="icon-[tabler--mail] size-5 text-secondary"></span>
+                <span className="font-medium">{t("quickLinks.feedback")}</span>
+              </a>
+            )}
           </div>
 
           <div className="divider my-4"></div>
@@ -1389,20 +1418,22 @@ export const getServerSideProps = withAuth(async (context) => {
         "Current version from package.json",
       );
 
-      // Fetch latest version from GitHub
-      const response = await fetch(
-        "https://api.github.com/repos/thomsa/auktiva/releases/latest",
-        {
-          headers: {
-            Accept: "application/vnd.github.v3+json",
-            "User-Agent": "Auktiva",
-          },
-        },
-      );
+      // Fetch latest version from GitHub (only if RELEASES_REPO is set)
+      const url = isUpdateCheckEnabled()
+        ? releasesApiUrl("/releases/latest")
+        : null;
+      const response = url
+        ? await fetch(url, {
+            headers: {
+              Accept: "application/vnd.github.v3+json",
+              "User-Agent": "Auktiva",
+            },
+          })
+        : null;
 
-      settingsLogger.debug({ status: response.status }, "GitHub API response");
+      settingsLogger.debug({ status: response?.status }, "GitHub API response");
 
-      if (response.ok) {
+      if (response?.ok) {
         const release = await response.json();
         const latestVersion = release.tag_name?.replace(/^v/, "") || null;
         const updateAvailable =
@@ -1420,7 +1451,9 @@ export const getServerSideProps = withAuth(async (context) => {
           releaseUrl: release.html_url || null,
         };
       } else {
-        settingsLogger.warn({ status: response.status }, "GitHub API failed");
+        if (response) {
+          settingsLogger.warn({ status: response.status }, "GitHub API failed");
+        }
         versionInfo = {
           currentVersion,
           latestVersion: null,
@@ -1465,7 +1498,8 @@ export const getServerSideProps = withAuth(async (context) => {
       isDeploymentAdmin,
       hasDeploymentAdmin,
       versionInfo,
-      isHostedDeployment: !!process.env.VERCEL || process.env.HOSTED === "true",
+      isHostedDeployment: getIsHostedDeployment(),
+      changelogUrl: getChangelogUrl(),
       messages,
     },
   };

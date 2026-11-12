@@ -9,6 +9,12 @@ import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { getMessages, Locale } from "@/i18n";
 import { useTranslations } from "next-intl";
 import { withAuth } from "@/lib/auth/withAuth";
+import {
+  PaymentPickupFields,
+  type PaymentPickupValues,
+} from "@/components/auction";
+import { getUserSiteRole } from "@/lib/services/site-role.service";
+import { canCreateAuctions } from "@/lib/site-roles";
 
 interface CreateAuctionProps {
   user: {
@@ -17,11 +23,14 @@ interface CreateAuctionProps {
     email: string;
   };
   allowOpenAuctions: boolean;
+  /** Pre-fills the payment link (DEFAULT_PAYMENT_URL) */
+  defaultPaymentUrl: string;
 }
 
 export default function CreateAuctionPage({
   user,
   allowOpenAuctions,
+  defaultPaymentUrl,
 }: CreateAuctionProps) {
   const router = useRouter();
   const t = useTranslations("auction.create");
@@ -33,6 +42,11 @@ export default function CreateAuctionPage({
   const [antiSnipeEnabled, setAntiSnipeEnabled] = useState(false);
   const [antiSnipeThreshold, setAntiSnipeThreshold] = useState(300);
   const [antiSnipeExtension, setAntiSnipeExtension] = useState(300);
+  const [payment, setPayment] = useState<PaymentPickupValues>({
+    paymentUrl: defaultPaymentUrl,
+    paymentInstructions: "",
+    pickupInstructions: "",
+  });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -51,6 +65,7 @@ export default function CreateAuctionPage({
       defaultAntiSnipe: antiSnipeEnabled,
       defaultAntiSnipeThreshold: antiSnipeThreshold,
       defaultAntiSnipeExtension: antiSnipeExtension,
+      ...payment,
     };
 
     try {
@@ -147,6 +162,20 @@ export default function CreateAuctionPage({
               </div>
             </div>
 
+            {/* Payment & Pickup (FHU) */}
+            <div className="divider opacity-50"></div>
+            <PaymentPickupFields
+              values={payment}
+              onChange={(field, value) =>
+                setPayment((prev) => ({ ...prev, [field]: value }))
+              }
+              errors={{
+                paymentUrl: fieldErrors.paymentUrl
+                  ? String(fieldErrors.paymentUrl)
+                  : undefined,
+              }}
+            />
+
             {/* Access Settings */}
             <div className="divider opacity-50"></div>
             <div className="space-y-4">
@@ -190,7 +219,7 @@ export default function CreateAuctionPage({
             {/* Bidding Settings */}
             <div className="divider opacity-50"></div>
             <div className="space-y-4">
-              <h2 className="text-lg font-semibold flex items-center gap-2 text-accent">
+              <h2 className="text-lg font-semibold flex items-center gap-2 text-secondary">
                 <span className="icon-[tabler--gavel] size-5"></span>
                 {t("biddingSettings")}
               </h2>
@@ -344,6 +373,12 @@ export default function CreateAuctionPage({
 }
 
 export const getServerSideProps = withAuth(async (context) => {
+  // FHU: only approved organizers (and site admins) can create auctions
+  const siteRole = await getUserSiteRole(context.session.user.id);
+  if (!canCreateAuctions(siteRole)) {
+    return { redirect: { destination: "/dashboard", permanent: false } };
+  }
+
   const messages = await getMessages(context.locale as Locale);
 
   return {
@@ -354,6 +389,7 @@ export const getServerSideProps = withAuth(async (context) => {
         email: context.session.user.email || "",
       },
       allowOpenAuctions: process.env.ALLOW_OPEN_AUCTIONS === "true",
+      defaultPaymentUrl: process.env.DEFAULT_PAYMENT_URL || "",
       messages,
     },
   };

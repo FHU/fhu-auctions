@@ -1,78 +1,77 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { brand, supportMailto } from "@/config/brand";
+import { BrandLockup } from "@/components/common/BrandLockup";
 
 export function Footer() {
   const t = useTranslations();
   return (
-    <footer className="bg-base-100 border-t border-base-content/10 pt-20 pb-10">
+    <footer className="bg-fhu-maroon-deep text-white border-t-4 border-fhu-gold pt-16 pb-10">
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-4 gap-12 mb-16">
           <div className="col-span-2">
-            <Link href="/" className="flex items-center gap-2 mb-6">
-              <span className="icon-[tabler--gavel] size-8 text-primary"></span>
-              <span className="text-2xl font-bold bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent">
-                {t("common.appName")}
-              </span>
+            <Link
+              href="/"
+              aria-label={t("common.appName")}
+              className="inline-block mb-6"
+            >
+              <BrandLockup variant="white" />
             </Link>
-            <p className="text-base-content/60 max-w-md mb-8">
+            <p className="text-white/80 max-w-md mb-2">
               {t("footer.description")}
             </p>
-            <div className="flex gap-4">
+            <p className="text-white/80 text-sm max-w-md">
               <a
-                href="https://github.com/thomsa/auktiva"
+                href={brand.orgUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn btn-ghost btn-circle hover:bg-base-content/5"
-                aria-label="GitHub"
+                className="hover:text-fhu-gold transition-colors"
               >
-                <span
-                  className="icon-[tabler--brand-github] size-6"
-                  aria-hidden="true"
-                ></span>
+                {brand.orgName}
               </a>
-            </div>
+              <br />
+              {brand.postalAddress}
+            </p>
           </div>
 
           <div>
-            <h4 className="font-bold mb-6 text-lg">{t("footer.resources")}</h4>
-            <ul className="space-y-4 text-base-content/60">
-              <li>
-                <Link
-                  href="https://docs.auktiva.org"
-                  className="hover:text-primary transition-colors"
-                  target="_blank"
-                >
-                  {t("nav.documentation")}
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="https://github.com/thomsa/auktiva"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-primary transition-colors"
-                >
-                  {t("footer.github")}
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/changelog"
-                  className="hover:text-primary transition-colors"
-                >
-                  {t("footer.changelog")}
-                </Link>
-              </li>
+            <h4 className="font-bold mb-6 text-lg text-fhu-gold">
+              {t("footer.resources")}
+            </h4>
+            <ul className="space-y-4 text-white/80">
+              {brand.helpUrl && (
+                <li>
+                  <Link
+                    href={brand.helpUrl}
+                    className="hover:text-fhu-gold transition-colors"
+                    target="_blank"
+                  >
+                    {t("nav.documentation")}
+                  </Link>
+                </li>
+              )}
+              {supportMailto && (
+                <li>
+                  <a
+                    href={supportMailto}
+                    className="hover:text-fhu-gold transition-colors"
+                  >
+                    {t("footer.contact")}
+                  </a>
+                </li>
+              )}
             </ul>
           </div>
 
           <div>
-            <h4 className="font-bold mb-6 text-lg">{t("footer.legal")}</h4>
-            <ul className="space-y-4 text-base-content/60">
+            <h4 className="font-bold mb-6 text-lg text-fhu-gold">
+              {t("footer.legal")}
+            </h4>
+            <ul className="space-y-4 text-white/80">
               <li>
                 <Link
                   href="/privacy"
-                  className="hover:text-primary transition-colors"
+                  className="hover:text-fhu-gold transition-colors"
                 >
                   {t("footer.privacyPolicy")}
                 </Link>
@@ -80,7 +79,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/terms"
-                  className="hover:text-primary transition-colors"
+                  className="hover:text-fhu-gold transition-colors"
                 >
                   {t("footer.termsOfService")}
                 </Link>
@@ -89,16 +88,29 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-base-content/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-base-content/60">
+        <div className="border-t border-white/20 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-white/80">
           <p>
-            © {new Date().getFullYear()} {t("common.appName")}.{" "}
+            © {new Date().getFullYear()} {brand.orgName}.{" "}
             {t("footer.allRightsReserved")}
           </p>
           <p>
+            {t.rich("footer.poweredBy", {
+              link: (chunks) => (
+                <a
+                  href={brand.upstream.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white underline decoration-white/40 hover:text-fhu-gold hover:decoration-fhu-gold transition-colors"
+                >
+                  {chunks}
+                </a>
+              ),
+            })}
+            {" · "}
             {t("footer.designedBy")}{" "}
             <a
               href="https://tamaslorincz.com"
-              className="text-base-content/80 underline decoration-base-content/30 hover:text-primary hover:decoration-primary transition-colors"
+              className="text-white underline decoration-white/40 hover:text-fhu-gold hover:decoration-fhu-gold transition-colors"
             >
               Tamas Lorincz
             </a>

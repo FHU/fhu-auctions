@@ -11,6 +11,7 @@ import { getMessages, Locale } from "@/i18n";
 import { useConfirmDialog } from "@/hooks/ui";
 import { useTranslations } from "next-intl";
 import { withAuth } from "@/lib/auth/withAuth";
+import { PaymentPickupFields } from "@/components/auction";
 
 interface AuctionSettingsProps {
   user: {
@@ -33,6 +34,9 @@ interface AuctionSettingsProps {
     defaultAntiSnipe: boolean;
     defaultAntiSnipeThreshold: number;
     defaultAntiSnipeExtension: number;
+    paymentUrl: string | null;
+    paymentInstructions: string | null;
+    pickupInstructions: string | null;
   };
   allowOpenAuctions: boolean;
 }
@@ -111,6 +115,9 @@ export default function AuctionSettingsPage({
     defaultAntiSnipe: auction.defaultAntiSnipe,
     defaultAntiSnipeThreshold: auction.defaultAntiSnipeThreshold,
     defaultAntiSnipeExtension: auction.defaultAntiSnipeExtension,
+    paymentUrl: auction.paymentUrl || "",
+    paymentInstructions: auction.paymentInstructions || "",
+    pickupInstructions: auction.pickupInstructions || "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -126,7 +133,9 @@ export default function AuctionSettingsPage({
   >([]);
   const [isCurrencyModalOpen, setIsCurrencyModalOpen] = useState(false);
   const [isSavingCurrency, setIsSavingCurrency] = useState(false);
-  const [editingCurrencyId, setEditingCurrencyId] = useState<string | null>(null);
+  const [editingCurrencyId, setEditingCurrencyId] = useState<string | null>(
+    null,
+  );
   const [currencyForm, setCurrencyForm] =
     useState<AuctionCurrencyProfileForm>(EMPTY_CURRENCY_FORM);
 
@@ -242,9 +251,12 @@ export default function AuctionSettingsPage({
 
   const archiveCurrency = async (currencyId: string) => {
     try {
-      const res = await fetch(`/api/auctions/${auction.id}/currencies/${currencyId}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `/api/auctions/${auction.id}/currencies/${currencyId}`,
+        {
+          method: "DELETE",
+        },
+      );
       if (!res.ok) {
         const result = await res.json();
         showToast(result.message || tErrors("auction.updateFailed"), "error");
@@ -396,6 +408,19 @@ export default function AuctionSettingsPage({
               </div>
             </div>
 
+            {/* Payment & Pickup (FHU) */}
+            <div className="divider opacity-50"></div>
+            <PaymentPickupFields
+              values={{
+                paymentUrl: formData.paymentUrl,
+                paymentInstructions: formData.paymentInstructions,
+                pickupInstructions: formData.pickupInstructions,
+              }}
+              onChange={(field, value) =>
+                setFormData((prev) => ({ ...prev, [field]: value }))
+              }
+            />
+
             {/* Access Settings */}
             <div className="divider opacity-50"></div>
             <div className="space-y-4">
@@ -448,7 +473,7 @@ export default function AuctionSettingsPage({
             {/* Bidding Settings */}
             <div className="divider opacity-50"></div>
             <div className="space-y-4">
-              <h2 className="text-lg font-semibold flex items-center gap-2 text-accent">
+              <h2 className="text-lg font-semibold flex items-center gap-2 text-secondary">
                 <span className="icon-[tabler--gavel] size-5"></span>
                 {tCreate("biddingSettings")}
               </h2>
@@ -539,7 +564,9 @@ export default function AuctionSettingsPage({
               {currencyProfiles.length === 0 ? (
                 <div className="alert alert-info">
                   <span className="icon-[tabler--info-circle] size-5"></span>
-                  <span>No custom currency profile yet. Base currency rules apply.</span>
+                  <span>
+                    No custom currency profile yet. Base currency rules apply.
+                  </span>
                 </div>
               ) : (
                 <div className="space-y-2">
@@ -553,7 +580,9 @@ export default function AuctionSettingsPage({
                           {profile.name} ({profile.symbol})
                         </div>
                         <div className="text-xs text-base-content/60">
-                          {profile.code} · {profile.inputMode.toLowerCase()} · {profile.fractionMode.toLowerCase()} · rate {profile.conversionRate}
+                          {profile.code} · {profile.inputMode.toLowerCase()} ·{" "}
+                          {profile.fractionMode.toLowerCase()} · rate{" "}
+                          {profile.conversionRate}
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
@@ -849,7 +878,9 @@ export default function AuctionSettingsPage({
           <div className="modal-box max-w-2xl">
             <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
               <span className="icon-[tabler--coins] size-5"></span>
-              {editingCurrencyId ? "Edit Currency Profile" : "New Currency Profile"}
+              {editingCurrencyId
+                ? "Edit Currency Profile"
+                : "New Currency Profile"}
             </h3>
 
             <div className="space-y-3">
@@ -859,7 +890,10 @@ export default function AuctionSettingsPage({
                   placeholder="Name"
                   value={currencyForm.name}
                   onChange={(e) =>
-                    setCurrencyForm((prev) => ({ ...prev, name: e.target.value }))
+                    setCurrencyForm((prev) => ({
+                      ...prev,
+                      name: e.target.value,
+                    }))
                   }
                 />
                 <input
@@ -867,7 +901,10 @@ export default function AuctionSettingsPage({
                   placeholder="Code"
                   value={currencyForm.code}
                   onChange={(e) =>
-                    setCurrencyForm((prev) => ({ ...prev, code: e.target.value }))
+                    setCurrencyForm((prev) => ({
+                      ...prev,
+                      code: e.target.value,
+                    }))
                   }
                 />
                 <input
@@ -875,7 +912,10 @@ export default function AuctionSettingsPage({
                   placeholder="Symbol"
                   value={currencyForm.symbol}
                   onChange={(e) =>
-                    setCurrencyForm((prev) => ({ ...prev, symbol: e.target.value }))
+                    setCurrencyForm((prev) => ({
+                      ...prev,
+                      symbol: e.target.value,
+                    }))
                   }
                 />
               </div>
@@ -901,7 +941,9 @@ export default function AuctionSettingsPage({
                   onChange={(e) =>
                     setCurrencyForm((prev) => ({
                       ...prev,
-                      fractionMode: e.target.value as "INTEGER_ONLY" | "DECIMAL",
+                      fractionMode: e.target.value as
+                        | "INTEGER_ONLY"
+                        | "DECIMAL",
                     }))
                   }
                 >
@@ -931,7 +973,10 @@ export default function AuctionSettingsPage({
                 placeholder="Precision"
                 value={currencyForm.precision}
                 onChange={(e) =>
-                  setCurrencyForm((prev) => ({ ...prev, precision: e.target.value }))
+                  setCurrencyForm((prev) => ({
+                    ...prev,
+                    precision: e.target.value,
+                  }))
                 }
               />
 
@@ -967,16 +1012,23 @@ export default function AuctionSettingsPage({
                                 i === index
                                   ? {
                                       ...r,
-                                      type: e.target.value as CurrencyRuleForm["type"],
+                                      type: e.target
+                                        .value as CurrencyRuleForm["type"],
                                     }
                                   : r,
                               ),
                             }))
                           }
                         >
-                          <option value="MIN_INCREMENT">Minimum increment</option>
-                          <option value="MIN_COMPONENT_RATIO">Minimum component ratio</option>
-                          <option value="REQUIRED_DENOMINATION">Required denomination</option>
+                          <option value="MIN_INCREMENT">
+                            Minimum increment
+                          </option>
+                          <option value="MIN_COMPONENT_RATIO">
+                            Minimum component ratio
+                          </option>
+                          <option value="REQUIRED_DENOMINATION">
+                            Required denomination
+                          </option>
                         </select>
                         <label className="label cursor-pointer gap-2">
                           <input
@@ -1027,7 +1079,11 @@ export default function AuctionSettingsPage({
                     </div>
                   ))}
                 </div>
-                <button type="button" className="btn btn-xs mt-2" onClick={addRule}>
+                <button
+                  type="button"
+                  className="btn btn-xs mt-2"
+                  onClick={addRule}
+                >
                   Add Rule
                 </button>
               </div>
@@ -1036,7 +1092,9 @@ export default function AuctionSettingsPage({
                 <span className="icon-[tabler--sparkles] size-5"></span>
                 <span>
                   Preview: {currencyForm.symbol || "$"}
-                  {currencyForm.fractionMode === "INTEGER_ONLY" ? "123" : "123.45"}
+                  {currencyForm.fractionMode === "INTEGER_ONLY"
+                    ? "123"
+                    : "123.45"}
                 </span>
               </div>
             </div>
@@ -1156,6 +1214,9 @@ export const getServerSideProps = withAuth(async (context) => {
         defaultAntiSnipe: auction.defaultAntiSnipe,
         defaultAntiSnipeThreshold: auction.defaultAntiSnipeThreshold,
         defaultAntiSnipeExtension: auction.defaultAntiSnipeExtension,
+        paymentUrl: auction.paymentUrl,
+        paymentInstructions: auction.paymentInstructions,
+        pickupInstructions: auction.pickupInstructions,
       },
       allowOpenAuctions: process.env.ALLOW_OPEN_AUCTIONS === "true",
       messages: await getMessages(context.locale as Locale),

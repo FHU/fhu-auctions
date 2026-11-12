@@ -861,9 +861,7 @@ function BulkEditRow({
       {showOwner && (
         <td>
           <div className="flex items-center gap-2">
-            {isOwnItem && (
-              <span className="w-1 h-6 rounded-full bg-secondary shrink-0"></span>
-            )}
+            {isOwnItem && <span className="w-1 h-6 bg-accent shrink-0"></span>}
             <div className="min-w-0">
               <div className="text-sm font-medium truncate">
                 {item.creatorName || tCommon("member.noName")}

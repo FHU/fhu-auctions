@@ -52,13 +52,17 @@ export default createHandler({
 - **Services** (`src/lib/services/*.service.ts`): Prisma access and business logic, plus realtime publishing.
 - **Errors**: throw `ApiError` subclasses from `src/lib/api/errors.ts` (`NotFoundError`, `ForbiddenError`, `ValidationError`, …). `createHandler` converts them to `{ message, code, ...details }` JSON responses; anything else becomes a logged 500.
 
+### Site roles (FHU)
+
+`User.siteRole` (`USER` | `ORGANIZER` | `SITE_ADMIN`) is separate from per-auction `MemberRole`. Only organizers and site admins can create auctions (`requireOrganizer` on `POST /api/auctions`; `/auctions/create` redirects others). Site admins manage roles at `/admin/users` (`requireSiteAdmin`). Emails in `SITE_ADMIN_EMAILS` are always site admins. Rules live in `src/lib/site-roles.ts`; DB access in `src/lib/services/site-role.service.ts`.
+
 ### Pages and auth
 
 Pages use `getServerSideProps`. Protected pages wrap it with `withAuth` from `src/lib/auth/withAuth.ts` (a *different* `withAuth` from the API middleware) which redirects to login with a `redirectUrl`. NextAuth config lives in `src/lib/auth.ts`.
 
 ### i18n
 
-Locales `en, pl, hu, de, es` via Next's built-in i18n routing (`next.config.ts`). Translations are split by namespace in `messages/<locale>/*.json`; `getMessages()` in `src/i18n/getMessages.ts` merges every namespace file, and each page must return `messages` from its `getServerSideProps`/`getStaticProps`. When adding a new namespace file, register it in `getMessages`. New user-facing strings need entries in **all five** locale directories.
+This FHU deployment serves **English only**: `locales` in `src/i18n/config.ts` and `i18n.locales` in `next.config.ts` are `["en"]`, and the language switchers hide themselves when one locale is enabled. Translations for `pl, hu, de, es` are kept (unused) in `messages/` so upstream merges stay clean and a locale can be re-enabled by adding it to both lists. Translations are split by namespace in `messages/<locale>/*.json`; `getMessages()` in `src/i18n/getMessages.ts` merges every namespace file, and each page must return `messages` from its `getServerSideProps`/`getStaticProps`. When adding a new namespace file, register it in `getMessages`. New user-facing strings need an entry in `messages/en/` only.
 
 ### Database
 

@@ -23,7 +23,9 @@
     "empty": {
       "title": "No auctions yet",
       "description": "You haven't joined or created any auctions yet. Create your first auction or join one using an invite link.",
-      "createFirst": "Create Your First Auction"
+      "createFirst": "Create Your First Auction",
+      "descriptionBidder": "You haven't joined any auctions yet. When an organizer shares an invite link with you, open it to join and start bidding.",
+      "becomeOrganizer": "Want to run a charity auction? Contact us to become an organizer."
     },
     "seo": {
       "title": "Dashboard",

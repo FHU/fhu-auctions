@@ -6,6 +6,8 @@ import { useFormatters } from "@/i18n";
 import { RichTextRenderer } from "@/components/ui/rich-text-editor";
 import { useToast } from "@/components/ui/toast";
 import { QuitAuctionModal } from "@/components/auction/QuitAuctionModal";
+import { PaymentPickupInfo } from "./PaymentPickupInfo";
+import { hasPaymentInfo } from "@/lib/charity-fields";
 
 interface AuctionSidebarProps {
   auction: {
@@ -17,6 +19,9 @@ interface AuctionSidebarProps {
     joinMode: string;
     bidderVisibility: string;
     memberCanInvite: boolean;
+    paymentUrl?: string | null;
+    paymentInstructions?: string | null;
+    pickupInstructions?: string | null;
     creator: {
       name: string | null;
       email: string;
@@ -33,6 +38,7 @@ interface AuctionSidebarProps {
 
 export function AuctionSidebar({ auction, membership }: AuctionSidebarProps) {
   const [copied, setCopied] = useState(false);
+  const tPayment = useTranslations("auction.payment");
   const [showQuitModal, setShowQuitModal] = useState(false);
   const { showToast } = useToast();
   const t = useTranslations("auction");
@@ -116,7 +122,7 @@ export function AuctionSidebar({ auction, membership }: AuctionSidebarProps) {
             <div className="absolute inset-0 bg-gradient-to-t from-base-100 to-transparent opacity-60"></div>
           </figure>
         ) : (
-          <div className="h-24 bg-gradient-to-br from-primary/5 to-secondary/5 border-b border-base-content/5 flex items-center justify-center">
+          <div className="h-24 bg-primary/5 border-b border-base-content/5 flex items-center justify-center">
             <span className="icon-[tabler--gavel] size-8 text-primary/20"></span>
           </div>
         )}
@@ -188,6 +194,20 @@ export function AuctionSidebar({ auction, membership }: AuctionSidebarProps) {
           </div>
         </div>
       </div>
+
+      {/* Payment & Pickup (FHU) */}
+      {hasPaymentInfo(auction) && (
+        <div className="card bg-base-100 border border-base-300 border-t-4 border-t-primary">
+          <div className="card-body p-5">
+            <PaymentPickupInfo
+              title={tPayment("sectionTitle")}
+              paymentUrl={auction.paymentUrl ?? null}
+              paymentInstructions={auction.paymentInstructions ?? null}
+              pickupInstructions={auction.pickupInstructions ?? null}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Quick Actions */}
       <div className="card bg-base-100/50 backdrop-blur-sm border border-base-content/5 shadow-lg">

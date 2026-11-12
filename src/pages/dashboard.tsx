@@ -16,6 +16,9 @@ import {
 } from "@/components/ui/sort-dropdown";
 import { useSortFilter, usePollingInterval } from "@/hooks/ui";
 import { withAuth } from "@/lib/auth/withAuth";
+import { getUserSiteRole } from "@/lib/services/site-role.service";
+import { canCreateAuctions as roleCanCreateAuctions } from "@/lib/site-roles";
+import { supportMailto } from "@/config/brand";
 import { isItemEnded, getBidStatus } from "@/utils/auction-helpers";
 import { useTranslations } from "next-intl";
 
@@ -89,6 +92,8 @@ interface DashboardProps {
     name: string | null;
     email: string;
   };
+  /** FHU: only organizers and site admins see "Create Auction" */
+  canCreateAuctions: boolean;
 }
 
 function BidItemCard({ item, userId }: { item: BidItem; userId: string }) {
@@ -229,7 +234,10 @@ function UserItemCard({ item }: { item: UserItem }) {
   );
 }
 
-export default function DashboardPage({ user }: DashboardProps) {
+export default function DashboardPage({
+  user,
+  canCreateAuctions,
+}: DashboardProps) {
   const t = useTranslations("dashboard");
   const tStats = useTranslations("dashboard.stats");
   const tEmpty = useTranslations("dashboard.empty");
@@ -290,13 +298,15 @@ export default function DashboardPage({ user }: DashboardProps) {
                 </p>
               </div>
             </div>
-            <Link
-              href="/auctions/create"
-              className="btn btn-primary w-full sm:w-auto"
-            >
-              <span className="icon-[tabler--plus] size-5"></span>
-              {t("createAuction")}
-            </Link>
+            {canCreateAuctions && (
+              <Link
+                href="/auctions/create"
+                className="btn btn-primary w-full sm:w-auto"
+              >
+                <span className="icon-[tabler--plus] size-5"></span>
+                {t("createAuction")}
+              </Link>
+            )}
           </div>
           <SkeletonDashboard />
         </PageLayout>
@@ -321,13 +331,15 @@ export default function DashboardPage({ user }: DashboardProps) {
               </p>
             </div>
           </div>
-          <Link
-            href="/auctions/create"
-            className="btn btn-primary w-full sm:w-auto"
-          >
-            <span className="icon-[tabler--plus] size-5"></span>
-            {t("createAuction")}
-          </Link>
+          {canCreateAuctions && (
+            <Link
+              href="/auctions/create"
+              className="btn btn-primary w-full sm:w-auto"
+            >
+              <span className="icon-[tabler--plus] size-5"></span>
+              {t("createAuction")}
+            </Link>
+          )}
         </div>
 
         {/* Stats Cards */}
@@ -418,12 +430,22 @@ export default function DashboardPage({ user }: DashboardProps) {
               <EmptyState
                 icon="icon-[tabler--gavel]"
                 title={tEmpty("title")}
-                description={tEmpty("description")}
+                description={
+                  canCreateAuctions
+                    ? tEmpty("description")
+                    : tEmpty("descriptionBidder")
+                }
                 action={
-                  <Link href="/auctions/create" className="btn btn-primary">
-                    <span className="icon-[tabler--plus] size-5"></span>
-                    {tEmpty("createFirst")}
-                  </Link>
+                  canCreateAuctions ? (
+                    <Link href="/auctions/create" className="btn btn-primary">
+                      <span className="icon-[tabler--plus] size-5"></span>
+                      {tEmpty("createFirst")}
+                    </Link>
+                  ) : supportMailto ? (
+                    <a href={supportMailto} className="link link-primary">
+                      {tEmpty("becomeOrganizer")}
+                    </a>
+                  ) : undefined
                 }
               />
             </div>
@@ -454,9 +476,11 @@ export default function DashboardPage({ user }: DashboardProps) {
 
 export const getServerSideProps = withAuth(async (context) => {
   const messages = await getMessages(context.locale as Locale);
+  const siteRole = await getUserSiteRole(context.session.user.id);
 
   return {
     props: {
+      canCreateAuctions: roleCanCreateAuctions(siteRole),
       user: {
         id: context.session.user.id,
         name: context.session.user.name || null,

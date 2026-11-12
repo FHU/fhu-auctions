@@ -152,7 +152,7 @@ export default function AuctionDetailPage({
         <div className="flex items-center justify-center min-h-[50vh]">
           <div className="card bg-base-100 shadow-xl border border-base-content/10 max-w-md w-full">
             <div className="card-body items-center text-center">
-              <div className="w-16 h-16 rounded-full bg-warning/10 flex items-center justify-center mb-2">
+              <div className="w-16 h-16 bg-warning/10 flex items-center justify-center mb-2">
                 <span className="icon-[tabler--door-enter] size-8 text-warning"></span>
               </div>
               <h2 className="card-title text-lg">{t("rejoin.title")}</h2>
@@ -214,7 +214,7 @@ export default function AuctionDetailPage({
           shortLabel={tCommon("back")}
         />
         <div className="flex items-center gap-3 mt-4">
-          <div className="w-12 h-12 shrink-0 rounded-xl bg-linear-to-br from-primary to-secondary flex items-center justify-center text-primary-content shadow-lg shadow-primary/20">
+          <div className="w-12 h-12 shrink-0 rounded-xl bg-primary flex items-center justify-center text-primary-content shadow-lg shadow-primary/20">
             <span className="icon-[tabler--gavel] size-7"></span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">

@@ -18,7 +18,7 @@ const useCases = [
   {
     key: "family",
     icon: "icon-[tabler--users-group]",
-    color: "text-accent",
+    color: "text-secondary",
     bgColor: "bg-accent/10",
   },
   {
@@ -39,9 +39,7 @@ export function UseCases() {
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             {t("sectionTitle")}{" "}
-            <span className="bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent">
-              {t("sectionTitleHighlight")}
-            </span>
+            <span className="text-primary">{t("sectionTitleHighlight")}</span>
           </h2>
           <p className="text-base-content/60 max-w-2xl mx-auto text-lg">
             {t("sectionDescription")}

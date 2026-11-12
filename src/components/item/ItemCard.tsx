@@ -18,6 +18,8 @@ interface ItemCardProps {
     highestBidderId?: string | null;
     userHasBid?: boolean;
     isPublished?: boolean;
+    /** Donor credit (FHU); already hidden server-side for anonymous donors */
+    donorName?: string | null;
     _count: {
       bids: number;
     };
@@ -174,6 +176,12 @@ export function ItemCard({ item, auctionId, userId, isAdmin }: ItemCardProps) {
             )}
           </div>
 
+          {item.donorName && (
+            <p className="text-xs text-base-content/70 line-clamp-1 mb-1">
+              {t("item.donor.donatedBy")}{" "}
+              <span className="font-medium">{item.donorName}</span>
+            </p>
+          )}
           {item.description && (
             <p className="text-sm text-base-content/60 line-clamp-2 h-10 mb-2">
               {stripHtmlTags(item.description)}

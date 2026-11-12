@@ -6,6 +6,9 @@ import { fetcher } from "@/lib/fetcher";
 interface AppContextData {
   isUserAuctionAdmin: boolean;
   adminAuctionIds: string[];
+  /** Site role (FHU): ORGANIZER and SITE_ADMIN can create auctions */
+  canCreateAuctions: boolean;
+  isSiteAdmin: boolean;
   isLoading: boolean;
 }
 
@@ -22,6 +25,8 @@ interface AppProviderProps {
 interface UserAppDataResponse {
   isAuctionAdmin: boolean;
   adminAuctionIds: string[];
+  canCreateAuctions: boolean;
+  isSiteAdmin: boolean;
 }
 
 export function AppProvider({ children }: AppProviderProps) {
@@ -44,6 +49,8 @@ export function AppProvider({ children }: AppProviderProps) {
     () => ({
       isUserAuctionAdmin: data?.isAuctionAdmin ?? false,
       adminAuctionIds: data?.adminAuctionIds ?? [],
+      canCreateAuctions: data?.canCreateAuctions ?? false,
+      isSiteAdmin: data?.isSiteAdmin ?? false,
       isLoading,
       mutate: async () => {
         await mutate();

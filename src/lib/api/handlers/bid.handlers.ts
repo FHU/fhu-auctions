@@ -49,7 +49,33 @@ export type CreateBidBody = z.infer<typeof createBidSchema>;
  * GET /api/auctions/[id]/items/[itemId]/bids - List bids
  */
 export const listBids: ApiHandler = async (_req, res, ctx) => {
-  const bids = await bidService.getItemBids(ctx.params.itemId);
+  const viewerId = ctx.session!.user.id;
+  const item = await prisma.auctionItem.findUnique({
+    where: { id: ctx.params.itemId },
+    select: {
+      auctionId: true,
+      creatorId: true,
+      isPublished: true,
+      auction: { select: { bidderVisibility: true } },
+    },
+  });
+
+  // Item must belong to this auction, and drafts are creator-only
+  if (
+    !item ||
+    item.auctionId !== ctx.params.id ||
+    (!item.isPublished && item.creatorId !== viewerId)
+  ) {
+    throw new NotFoundError("Item not found");
+  }
+
+  // Same view as the item page: respects anonymous bidding, no emails
+  const bids = await itemService.getItemBidsForDisplay(
+    ctx.params.itemId,
+    viewerId,
+    item.creatorId,
+    item.auction.bidderVisibility,
+  );
   res.status(200).json(bids);
 };
 

@@ -85,7 +85,7 @@ export default function HistoryPage({ user }: HistoryPageProps) {
       <PageLayout user={user}>
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center text-accent">
+            <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center text-secondary">
               <span className="icon-[tabler--gavel] size-7"></span>
             </div>
             <div>
@@ -105,7 +105,7 @@ export default function HistoryPage({ user }: HistoryPageProps) {
     <PageLayout user={user}>
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center text-accent">
+          <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center text-secondary">
             <span className="icon-[tabler--gavel] size-7"></span>
           </div>
           <div>
@@ -144,7 +144,7 @@ export default function HistoryPage({ user }: HistoryPageProps) {
       <div className="card bg-base-100/50 backdrop-blur-sm border border-base-content/5 shadow-xl">
         <div className="card-body p-0 sm:p-6">
           <div className="flex items-center gap-2 px-6 pt-6 sm:px-0 sm:pt-0 mb-6">
-            <span className="w-1 h-6 rounded-full bg-secondary"></span>
+            <span className="w-1 h-6 bg-accent"></span>
             <h2 className="text-xl font-bold text-base-content">Recent Bids</h2>
           </div>
 

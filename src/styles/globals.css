@@ -1,9 +1,149 @@
 @import "tailwindcss";
-@plugin "daisyui";
+@plugin "daisyui" {
+  /* Built-in themes off: only the FHU light/dark themes below exist */
+  themes: false;
+}
 
 /* Iconify */
 @plugin "@iconify/tailwind4" {
   prefixes: tabler;
+}
+
+/* =============================================================================
+   FHU brand theme
+   Source: FHU Brand Kit (extracted from fhu.edu). Square corners, no shadows,
+   maroon + gold. Fonts are loaded with next/font in _app.tsx.
+   ========================================================================== */
+
+@theme inline {
+  --font-sans:
+    var(--font-montserrat), Montserrat, Helvetica, Arial, Lucida, sans-serif;
+  --font-display: var(--font-zilla-slab), "Zilla Slab", Georgia, serif;
+}
+
+@theme {
+  /* Fixed brand colors (same in every theme) */
+  --color-fhu-maroon: #702e3e;
+  --color-fhu-maroon-deep: #540217;
+  --color-fhu-gold: #c6b682;
+  --color-fhu-gold-dark: #aaa174;
+
+  /* FHU is a square-cornered, flat brand: every rounded-* and shadow-*
+     utility resolves to none. rounded-full stays round (avatars, dots). */
+  --radius: 0px;
+  --radius-xs: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-3xl: 0px;
+  --radius-4xl: 0px;
+  --shadow: 0 0 #0000;
+  --shadow-2xs: 0 0 #0000;
+  --shadow-xs: 0 0 #0000;
+  --shadow-sm: 0 0 #0000;
+  --shadow-md: 0 0 #0000;
+  --shadow-lg: 0 0 #0000;
+  --shadow-xl: 0 0 #0000;
+  --shadow-2xl: 0 0 #0000;
+}
+
+/* Light: official FHU palette. success/warning are the kit's hues darkened
+   to reach 4.5:1 as text on white and gray-100. */
+@plugin "daisyui/theme" {
+  name: "light";
+  default: true;
+  color-scheme: light;
+  --color-base-100: #ffffff;
+  --color-base-200: #f1f1f1;
+  --color-base-300: #cccccc;
+  --color-base-content: #333333;
+  --color-primary: #702e3e;
+  --color-primary-content: #ffffff;
+  --color-secondary: #540217;
+  --color-secondary-content: #ffffff;
+  --color-accent: #c6b682;
+  --color-accent-content: #540217;
+  --color-neutral: #231f20;
+  --color-neutral-content: #ffffff;
+  --color-info: #595d64;
+  --color-info-content: #ffffff;
+  --color-success: #467658;
+  --color-success-content: #ffffff;
+  --color-warning: #906413;
+  --color-warning-content: #ffffff;
+  --color-error: #ba0000;
+  --color-error-content: #ffffff;
+  --fhu-show-on-light: block;
+  --fhu-show-on-dark: none;
+  --radius-selector: 0rem;
+  --radius-field: 0rem;
+  --radius-box: 0rem;
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
+}
+
+/* Dark: derived from the kit (not an official FHU palette). Deep-maroon
+   surfaces, gold as the primary action color. All text pairs >= 5.5:1. */
+@plugin "daisyui/theme" {
+  name: "dark";
+  prefersdark: true;
+  color-scheme: dark;
+  --color-base-100: #1b1215;
+  --color-base-200: #23171b;
+  --color-base-300: #2f1f24;
+  --color-base-content: #f1f1f1;
+  --color-primary: #c6b682;
+  --color-primary-content: #540217;
+  --color-secondary: #c77689;
+  --color-secondary-content: #1b1215;
+  --color-accent: #aaa174;
+  --color-accent-content: #1b1215;
+  --color-neutral: #2f1f24;
+  --color-neutral-content: #f1f1f1;
+  --color-info: #8b9098;
+  --color-info-content: #1b1215;
+  --color-success: #63a37b;
+  --color-success-content: #1b1215;
+  --color-warning: #e2a024;
+  --color-warning-content: #1b1215;
+  --color-error: #ff4a4a;
+  --color-error-content: #1b1215;
+  --fhu-show-on-light: none;
+  --fhu-show-on-dark: block;
+  --radius-selector: 0rem;
+  --radius-field: 0rem;
+  --radius-box: 0rem;
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
+}
+
+@layer base {
+  h1,
+  h2 {
+    font-family: var(--font-display);
+  }
+}
+
+/* Theme-aware logo swap (BrandLockup variant="auto"); the --fhu-show-*
+   variables are set by each theme above */
+.fhu-on-light {
+  display: var(--fhu-show-on-light, block);
+}
+.fhu-on-dark {
+  display: var(--fhu-show-on-dark, none);
+}
+
+/* Brand lockup: FHU logo + divider + sub-site name */
+.fhu-lockup-label {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1;
 }
 
 /* Base styles */

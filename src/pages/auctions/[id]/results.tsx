@@ -4,6 +4,7 @@ import { PageLayout, BackLink, EmptyState } from "@/components/common";
 import { StatsCard } from "@/components/ui/stats-card";
 import { getMessages, Locale } from "@/i18n";
 import { useTranslations } from "next-intl";
+import { PaymentPickupInfo } from "@/components/auction";
 import { withAuth } from "@/lib/auth/withAuth";
 import { formatAuctionBidDisplay } from "@/lib/currency-display";
 
@@ -45,6 +46,9 @@ interface ResultsPageProps {
     description: string | null;
     endDate: string | null;
     isEnded: boolean;
+    paymentUrl: string | null;
+    paymentInstructions: string | null;
+    pickupInstructions: string | null;
   };
   winners: Winner[];
   userWins: Winner[];
@@ -63,6 +67,7 @@ export default function ResultsPage({
   isAdmin,
 }: ResultsPageProps) {
   const t = useTranslations("auction.results");
+  const tPayment = useTranslations("auction.payment");
   const tCommon = useTranslations("common");
   const tAuction = useTranslations("auction");
   const tStatus = useTranslations("status");
@@ -198,7 +203,7 @@ export default function ResultsPage({
 
               {userWins.length === 0 ? (
                 <div className="text-center py-12 flex flex-col items-center justify-center h-full">
-                  <div className="w-16 h-16 bg-base-100 rounded-full flex items-center justify-center mb-4 shadow-sm">
+                  <div className="w-16 h-16 bg-base-100 flex items-center justify-center mb-4 shadow-sm">
                     <span className="icon-[tabler--mood-sad] size-8 text-base-content/30"></span>
                   </div>
                   <p className="text-base-content/60 font-medium">
@@ -252,6 +257,19 @@ export default function ResultsPage({
                       </span>
                     </div>
                   </div>
+                  {/* How to pay & pick up (FHU) */}
+                  <PaymentPickupInfo
+                    className="mt-6 pt-6 border-t border-primary/10"
+                    title={
+                      auction.isEnded
+                        ? tPayment("winnerTitle")
+                        : tPayment("sectionTitle")
+                    }
+                    paymentUrl={auction.paymentUrl}
+                    paymentInstructions={auction.paymentInstructions}
+                    pickupInstructions={auction.pickupInstructions}
+                    showEmptyNote
+                  />
                 </div>
               )}
             </div>
@@ -395,7 +413,8 @@ export default function ResultsPage({
                             <span className="font-bold font-mono text-sm sm:text-lg">
                               {formatAuctionBidDisplay({
                                 amount: win.winningBid,
-                                enteredRepresentation: win.enteredRepresentation,
+                                enteredRepresentation:
+                                  win.enteredRepresentation,
                                 profile: win.currencyProfile,
                                 fallbackSymbol: win.currencySymbol,
                               })}

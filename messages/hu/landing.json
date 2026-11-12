@@ -10,8 +10,8 @@
       "demoAlt": "Interaktív demó",
       "bidNow": "Licitálj most",
       "showDemo": "Mutasd a demót",
-      "demoHint": "Kattints, hogy megnézd hogyan működik az Auktiva",
-      "demoTitle": "Auktiva Demó",
+      "demoHint": "Kattints, hogy megnézd hogyan működik az FHU Auctions",
+      "demoTitle": "FHU Auctions demó",
       "videoNotSupported": "A böngésződ nem támogatja a videó elemet.",
       "close": "Bezárás"
     },
@@ -47,7 +47,7 @@
     "useCases": {
       "sectionTitle": "Tökéletes",
       "sectionTitleHighlight": "minden alkalomra",
-      "sectionDescription": "Akár adománygyűjtésről, akár garázskiürítésről van szó, az Auktiva egyszerűvé teszi.",
+      "sectionDescription": "Akár adománygyűjtésről, akár garázskiürítésről van szó, az FHU Auctions egyszerűvé teszi.",
       "charity": {
         "title": "Jótékonysági aukciók",
         "description": "Szervezz csendes aukciókat nonprofit szervezeteknek, iskoláknak, egyházaknak és közösségi eseményekhez."
@@ -102,11 +102,11 @@
     },
     "cta": {
       "title": "Készen állsz az aukció indítására?",
-      "description": "Legyen szó jótékonysági aukcióról vagy éves lomtalanításról, az Auktiva teljesen ingyenes. Nyílt forráskódú, díjmentes, és közösségeknek készült.",
+      "description": "Legyen szó jótékonysági aukcióról vagy éves lomtalanításról, az FHU Auctions teljesen ingyenes. Nyílt forráskódú, díjmentes, és közösségeknek készült.",
       "getStarted": "Kezdés",
       "freeForever": "Ingyenes és mindig az is marad",
       "selfHostTitle": "Saját szerveren futtatnád?",
-      "selfHostDescription": "Futtasd az Auktivát saját szervereden teljes adatkontrollal. Indítás egyetlen paranccsal.",
+      "selfHostDescription": "Futtasd az FHU Auctions-t saját szervereden teljes adatkontrollal. Indítás egyetlen paranccsal.",
       "seeDocumentation": "Lásd a <link>fejlesztői dokumentációt</link> további részletekért."
     }
   }

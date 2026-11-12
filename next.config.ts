@@ -12,7 +12,8 @@ const nextConfig: NextConfig = {
   // Enable standalone output for Docker deployments
   output: "standalone",
   i18n: {
-    locales: ["en", "pl", "hu", "de", "es"],
+    // English only; keep in sync with `locales` in src/i18n/config.ts
+    locales: ["en"],
     defaultLocale: "en",
   },
   turbopack: {

@@ -1,78 +1,25 @@
 import Head from "next/head";
+import { brand } from "@/config/brand";
 
-// Site-wide SEO constants
-export const SITE_URL = "https://auktiva.org";
-export const SITE_NAME = "Auktiva";
-export const SITE_AUTHOR = "Tamas Lorincz";
-export const SITE_AUTHOR_URL = "https://www.tamaslorincz.com";
-export const SITE_TWITTER = "@auktiva";
+// Site-wide SEO constants (values come from src/config/brand.ts)
+export const SITE_URL = brand.siteUrl;
+export const SITE_NAME = brand.appName;
+export const SITE_AUTHOR = brand.orgName;
+export const SITE_AUTHOR_URL = brand.orgUrl;
 
-// Comprehensive keyword list for auction platform SEO
-// Primary target searches:
-// - "open source auction platform charity"
-// - "auction platform free", "auction free"
-// - "auction fundraiser", "auction charity"
-// - "auction platform charity", "auction platform fundraiser"
-// - "auction platform charity free", "auction platform fundraiser free"
-// - "declutter auction", "garage sale online", "sell unused items"
 export const SITE_KEYWORDS = [
-  // Primary high-intent keywords (exact match targets)
-  "open source auction platform charity",
-  "auction platform free",
-  "auction free",
-  "auction fundraiser",
-  "auction charity",
-  "auction platform charity",
-  "auction platform fundraiser",
-  "auction platform charity free",
-  "auction platform fundraiser free",
-  "free auction platform",
-  // Charity & Fundraising variations
-  "free charity auction software",
-  "free fundraiser auction platform",
-  "nonprofit auction platform free",
-  "charity auction software free",
-  "fundraising auction platform",
-  "silent auction software free",
-  "charity fundraising platform",
-  "donation auction free",
-  "benefit auction software",
-  "gala auction platform",
-  // Open source variations
-  "open source auction software",
-  "open source fundraiser platform",
-  "open source charity software",
-  "self-hosted auction platform",
-  "auction platform github",
-  // Event types
-  "school auction platform free",
-  "church auction software free",
-  "nonprofit auction software",
-  "community auction platform",
-  "private auction software",
-  // Decluttering & Personal use
-  "declutter auction app",
-  "sell unused items online",
-  "garage sale online platform",
-  "storage clearance auction",
-  "yearly declutter sale",
-  "family auction platform",
-  "friends and family auction",
-  "private sale platform free",
-  "sell stuff to friends",
-  "neighborhood auction app",
-  // Features
-  "real-time bidding platform",
-  "silent auction app free",
-  "online auction software free",
-  "auction management system",
+  "FHU",
+  "Freed-Hardeman University",
+  "FHU auctions",
+  "charity auction",
+  "silent auction",
+  "online auction",
+  "fundraiser",
+  "Henderson TN",
 ].join(", ");
 
-export const SITE_DESCRIPTION =
-  "Auktiva is a 100% free, open-source auction platform for charity fundraisers, nonprofit events, schools, churches, and personal use. Perfect for yearly decluttering, garage sales, or clearing out storage with friends and family. Create unlimited auctions with real-time bidding, member management, and multi-currency support. No fees, no limits, no credit card required.";
-
-export const SITE_DESCRIPTION_SHORT =
-  "Free open-source auction platform for charity fundraisers, decluttering sales, and private auctions with friends. Host unlimited auctions with real-time bidding - completely free, no fees ever.";
+export const SITE_DESCRIPTION = brand.description;
+export const SITE_DESCRIPTION_SHORT = brand.description;
 
 interface SEOProps {
   title?: string;
@@ -101,90 +48,37 @@ export function SEO({
   noindex = false,
   ogType = "website",
   ogImage = `${SITE_URL}/pictures/og-image.png`,
-  ogImageAlt = "Auktiva - Open Source Auction Platform",
+  ogImageAlt = SITE_NAME,
   article,
   structuredData,
 }: SEOProps) {
   const fullTitle = title
     ? `${title} | ${SITE_NAME}`
-    : `${SITE_NAME} - Free Open Source Auction Platform for Fundraisers & Charities`;
+    : `${SITE_NAME} | ${brand.orgName}`;
 
   const canonicalUrl = canonical || SITE_URL;
 
-  // Default structured data for the software application
+  const organization = {
+    "@type": "CollegeOrUniversity",
+    name: brand.orgName,
+    url: brand.orgUrl,
+    address: brand.postalAddress,
+  };
+
+  // Default structured data: this website, published by the university
   const defaultStructuredData = {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    name: SITE_NAME,
-    applicationCategory: "BusinessApplication",
-    applicationSubCategory: "Auction Software",
-    operatingSystem: "Web Browser",
-    offers: {
-      "@type": "Offer",
-      price: "0",
-      priceCurrency: "USD",
-    },
-    description: SITE_DESCRIPTION,
-    url: SITE_URL,
-    author: {
-      "@type": "Person",
-      name: SITE_AUTHOR,
-      url: SITE_AUTHOR_URL,
-    },
-    publisher: {
-      "@type": "Person",
-      name: SITE_AUTHOR,
-      url: SITE_AUTHOR_URL,
-    },
-    license: "https://opensource.org/licenses/MIT",
-    isAccessibleForFree: true,
-    featureList: [
-      "Real-time bidding",
-      "Private auctions",
-      "Member management",
-      "Multi-currency support",
-      "Image uploads",
-      "Email notifications",
-      "Mobile responsive",
-      "Self-hosting option",
-    ],
-  };
-
-  // Organization structured data
-  const organizationData = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: SITE_NAME,
-    url: SITE_URL,
-    logo: `${SITE_URL}/logo.png`,
-    description: SITE_DESCRIPTION_SHORT,
-    founder: {
-      "@type": "Person",
-      name: SITE_AUTHOR,
-      url: SITE_AUTHOR_URL,
-    },
-    sameAs: ["https://github.com/thomsa/auktiva"],
-  };
-
-  // WebSite structured data for search
-  const websiteData = {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: SITE_NAME,
     url: SITE_URL,
     description: SITE_DESCRIPTION_SHORT,
-    publisher: {
-      "@type": "Person",
-      name: SITE_AUTHOR,
-    },
-    potentialAction: {
-      "@type": "SearchAction",
-      target: {
-        "@type": "EntryPoint",
-        urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
-      },
-      "query-input": "required name=search_term_string",
-    },
+    publisher: organization,
+  };
+
+  // Organization structured data
+  const organizationData = {
+    "@context": "https://schema.org",
+    ...organization,
   };
 
   return (
@@ -271,8 +165,6 @@ export function SEO({
 
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:site" content={SITE_TWITTER} />
-      <meta name="twitter:creator" content={SITE_TWITTER} />
       <meta name="twitter:url" content={canonicalUrl} />
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description} />
@@ -288,9 +180,9 @@ export function SEO({
       <meta name="format-detection" content="telephone=no" />
 
       {/* Theme Color */}
-      <meta name="theme-color" content="#6366f1" />
-      <meta name="msapplication-TileColor" content="#6366f1" />
-      <meta name="msapplication-navbutton-color" content="#6366f1" />
+      <meta name="theme-color" content="#702e3e" />
+      <meta name="msapplication-TileColor" content="#702e3e" />
+      <meta name="msapplication-navbutton-color" content="#702e3e" />
 
       {/* Favicon */}
       <link rel="icon" href="/favicon.ico" />
@@ -326,12 +218,6 @@ export function SEO({
           __html: JSON.stringify(organizationData),
         }}
       />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(websiteData),
-        }}
-      />
     </Head>
   );
 }
@@ -346,7 +232,7 @@ export const pageSEO = {
   login: {
     title: "Sign In",
     description:
-      "Sign in to Auktiva to manage your auctions, place bids, and track your fundraising events. Free auction platform for charities and organizations.",
+      "Sign in to FHU Auctions to place bids and manage Freed-Hardeman University charity auctions.",
     keywords:
       "auction login, sign in auction platform, charity auction access, fundraiser login, auction account",
     noindex: true,
@@ -354,7 +240,7 @@ export const pageSEO = {
   register: {
     title: "Create Free Account",
     description:
-      "Create a free Auktiva account to start hosting charity auctions, fundraiser events, and silent auctions. No credit card required - completely free and open source.",
+      "Create an FHU Auctions account to bid in Freed-Hardeman University charity auctions.",
     keywords:
       "create auction account, free auction signup, charity auction registration, fundraiser account, auction platform signup",
     noindex: true,
@@ -374,7 +260,7 @@ export const pageSEO = {
   privacy: {
     title: "Privacy Policy",
     description:
-      "Auktiva Privacy Policy - Learn how we protect your data and respect your privacy. Open source auction platform committed to data security.",
+      "FHU Auctions Privacy Policy - how we collect, use, and protect your information.",
     keywords:
       "auction privacy policy, data protection, auction platform privacy",
     noindex: true,
@@ -382,7 +268,7 @@ export const pageSEO = {
   terms: {
     title: "Terms of Service",
     description:
-      "Auktiva Terms of Service - Understand the terms and conditions for using our free, open-source auction platform.",
+      "FHU Auctions Terms of Service - the terms for using Freed-Hardeman University's charity auction site.",
     keywords:
       "auction terms of service, auction platform terms, usage agreement",
     noindex: true,

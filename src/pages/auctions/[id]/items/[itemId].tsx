@@ -7,6 +7,8 @@ import { ItemsSidebar, SidebarItem } from "@/components/item/ItemsSidebar";
 import { DiscussionSection } from "@/components/item/DiscussionSection";
 import { Button } from "@/components/ui/button";
 import { RichTextRenderer } from "@/components/ui/rich-text-editor";
+import { PaymentPickupInfo } from "@/components/auction";
+import { DonorCredit } from "@/components/item";
 import { useToast } from "@/components/ui/toast";
 import { usePollingInterval } from "@/hooks/ui";
 import {
@@ -71,6 +73,9 @@ interface ItemDetailProps {
     id: string;
     name: string;
     bidderVisibility: string;
+    paymentUrl: string | null;
+    paymentInstructions: string | null;
+    pickupInstructions: string | null;
   };
   auctionItems: SidebarItem[];
   itemSidebarCollapsed: boolean;
@@ -96,6 +101,9 @@ interface ItemDetailProps {
     antiSnipeEnabled: boolean;
     antiSnipeThresholdSeconds: number;
     antiSnipeExtensionSeconds: number;
+    donorName: string | null;
+    donorUrl: string | null;
+    showDonor: boolean;
     creator: {
       id: string;
       name: string | null;
@@ -157,6 +165,7 @@ export default function ItemDetailPage({
   images,
 }: ItemDetailProps) {
   const t = useTranslations("item");
+  const tPayment = useTranslations("auction.payment");
   const tCommon = useTranslations("common");
   const tStatus = useTranslations("status");
   const tTime = useTranslations("time");
@@ -514,10 +523,7 @@ export default function ItemDetailPage({
   return (
     <div className="min-h-screen bg-base-100 relative overflow-x-hidden selection:bg-primary/20">
       {/* Background decorations */}
-      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[128px] translate-x-1/3 -translate-y-1/3"></div>
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-secondary/5 rounded-full blur-[128px] -translate-x-1/3 translate-y-1/3"></div>
-      </div>
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden"></div>
 
       <div className="relative z-10 mb-5 sm:mb-0">
         <Navbar user={user} />
@@ -583,6 +589,12 @@ export default function ItemDetailPage({
                               {item.creator.name || item.creator.email}
                             </span>
                           </div>
+                          <DonorCredit
+                            className="mt-2"
+                            donorName={item.donorName}
+                            donorUrl={item.donorUrl}
+                            showDonor={item.showDonor}
+                          />
                         </div>
 
                         <div className="flex gap-2 self-start w-full sm:w-auto flex-col items-end">
@@ -650,7 +662,7 @@ export default function ItemDetailPage({
                                   <span className="icon-[tabler--chevron-right] size-5"></span>
                                 </button>
                                 {/* Image Counter */}
-                                <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-md text-white text-xs px-3 py-1.5 rounded-full font-medium">
+                                <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-md text-white text-xs px-3 py-1.5 font-medium">
                                   {selectedImageIndex + 1} / {images.length}
                                 </div>
                               </>
@@ -722,7 +734,7 @@ export default function ItemDetailPage({
 
                         {bids.length === 0 ? (
                           <div className="text-center py-12 bg-base-200/30 rounded-xl border border-base-content/5 border-dashed">
-                            <div className="bg-base-200 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <div className="bg-base-200 w-12 h-12 flex items-center justify-center mx-auto mb-3">
                               <span className="icon-[tabler--gavel] size-6 text-base-content/30"></span>
                             </div>
                             <p className="text-base-content/60 font-medium">
@@ -742,7 +754,7 @@ export default function ItemDetailPage({
                               >
                                 <div className="flex items-center gap-3">
                                   <div
-                                    className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                                    className={`w-8 h-8 flex items-center justify-center ${
                                       index === 0
                                         ? "bg-primary text-primary-content"
                                         : "bg-base-300 text-base-content/60"
@@ -849,6 +861,18 @@ export default function ItemDetailPage({
                             {t("bid.highestBidder")}
                           </span>
                         </div>
+                      )}
+
+                      {/* Winner: how to pay & pick up (FHU) */}
+                      {isHighestBidder && isEnded && (
+                        <PaymentPickupInfo
+                          className="mb-6 p-4 border border-base-300 border-t-4 border-t-primary bg-base-100"
+                          title={tPayment("winnerTitle")}
+                          paymentUrl={auction.paymentUrl}
+                          paymentInstructions={auction.paymentInstructions}
+                          pickupInstructions={auction.pickupInstructions}
+                          showEmptyNote
+                        />
                       )}
 
                       {item.endDate && (
@@ -1222,6 +1246,9 @@ export const getServerSideProps = withAuth(async (context) => {
         id: membership.auction.id,
         name: membership.auction.name,
         bidderVisibility: membership.auction.bidderVisibility,
+        paymentUrl: membership.auction.paymentUrl,
+        paymentInstructions: membership.auction.paymentInstructions,
+        pickupInstructions: membership.auction.pickupInstructions,
       },
       auctionItems,
       itemSidebarCollapsed: userSettings?.itemSidebarCollapsed ?? false,

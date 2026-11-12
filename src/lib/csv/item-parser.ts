@@ -17,6 +17,9 @@ export interface ParsedCSVItem {
   startingBid: number;
   minBidIncrement: number;
   isPublished: boolean;
+  donorName: string | null;
+  donorUrl: string | null;
+  showDonor: boolean;
   errors: CSVParseError[];
 }
 
@@ -51,6 +54,18 @@ const HEADER_MAPPINGS: Record<string, string> = {
   ispublished: "isPublished",
   is_published: "isPublished",
   status: "isPublished",
+  // Donor credit (FHU)
+  donor: "donorName",
+  donorname: "donorName",
+  donor_name: "donorName",
+  donatedby: "donorName",
+  donated_by: "donorName",
+  donorurl: "donorUrl",
+  donor_url: "donorUrl",
+  donorwebsite: "donorUrl",
+  donor_website: "donorUrl",
+  showdonor: "showDonor",
+  show_donor: "showDonor",
 };
 
 function normalizeHeader(header: string): string {
@@ -147,6 +162,15 @@ export function parseCSV(
       });
     }
 
+    const donorUrl = rowData.donorUrl?.trim() || null;
+    if (donorUrl && !/^https?:\/\/\S+$/i.test(donorUrl)) {
+      rowErrors.push({
+        row: i + 1,
+        field: "donorUrl",
+        message: "invalid",
+      });
+    }
+
     if (minBidIncrement <= 0) {
       rowErrors.push({
         row: i + 1,
@@ -165,6 +189,10 @@ export function parseCSV(
       isPublished: rowData.isPublished
         ? parseBoolean(rowData.isPublished)
         : false,
+      donorName: rowData.donorName?.trim() || null,
+      donorUrl,
+      // Donors are shown unless the column explicitly says otherwise
+      showDonor: rowData.showDonor ? parseBoolean(rowData.showDonor) : true,
       errors: rowErrors,
     };
 
@@ -229,6 +257,9 @@ export function generateCSVTemplate(): string {
     "startingBid",
     "minIncrement",
     "published",
+    "donor",
+    "donorUrl",
+    "showDonor",
   ];
   const sampleRow = [
     "Sample Item",
@@ -237,6 +268,9 @@ export function generateCSVTemplate(): string {
     "100",
     "10",
     "false",
+    "Main Street Bakery",
+    "https://example.com",
+    "true",
   ];
 
   return [headers.join(","), sampleRow.join(",")].join("\n");

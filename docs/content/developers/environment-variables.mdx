@@ -239,15 +239,27 @@ Get credentials from [Pusher Dashboard](https://dashboard.pusher.com/).
 
 ## Feature Flags
 
-| Variable              | Required | Default | Description                           |
-| --------------------- | -------- | ------- | ------------------------------------- |
-| `ALLOW_OPEN_AUCTIONS` | No       | `false` | Allow users to create public auctions |
-| `MAINTENANCE_MODE`    | No       | `false` | Show maintenance page to all users    |
+| Variable                    | Required | Default           | Description                                                                                   |
+| --------------------------- | -------- | ----------------- | --------------------------------------------------------------------------------------------- |
+| `ALLOW_OPEN_AUCTIONS`       | No       | `false`           | Allow users to create public auctions                                                         |
+| `MAINTENANCE_MODE`          | No       | `false`           | Show maintenance page to all users                                                            |
+| `NEXT_PUBLIC_SUPPORT_EMAIL` | No       | -                 | Support address for Feedback/Contact links (mailto); fallback sender if `MAIL_FROM` is unset  |
+| `NEXT_PUBLIC_TIME_ZONE`     | No       | `America/Chicago` | IANA time zone used to display dates and times                                                |
+| `NEXT_PUBLIC_HELP_URL`      | No       | -                 | Help/documentation page; help links are hidden if unset                                       |
+| `DEFAULT_PAYMENT_URL`       | No       | -                 | Pre-fills the payment link on new auctions (organizers can change it per auction)             |
+| `SITE_ADMIN_EMAILS`         | No       | -                 | Comma-separated emails that are always site admins (manage Organizer roles at `/admin/users`) |
+| `RELEASES_REPO`             | No       | -                 | GitHub `owner/repo` used for version checks, self-update, and `/changelog`                    |
+| `HOSTED`                    | No       | `false`           | Managed deployment: hides deployment-admin settings and self-update (auto on Vercel)          |
 
 ```bash
 ALLOW_OPEN_AUCTIONS="true"
 MAINTENANCE_MODE="false"
+RELEASES_REPO="thomsa/auktiva"
 ```
+
+When `RELEASES_REPO` is unset, version checks, the update banner, self-update,
+and the changelog page's release list are all disabled. Forks should point it
+at their own repository so admins are never offered upstream releases.
 
 ## Complete Example
 

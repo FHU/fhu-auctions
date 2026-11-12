@@ -197,6 +197,9 @@ export default function CSVImportPage({
                 startingBid: item.startingBid,
                 minBidIncrement: item.minBidIncrement,
                 isPublished: item.isPublished,
+                donorName: item.donorName,
+                donorUrl: item.donorUrl,
+                showDonor: item.showDonor,
               }),
             },
           );
@@ -310,7 +313,8 @@ export default function CSVImportPage({
             <p className="font-medium mb-1">{t("csvFormat")}</p>
             <p>{t("csvFormatDesc")}</p>
             <code className="block mt-2 p-2 bg-base-200 rounded text-xs">
-              name, description, currency, startingBid, minIncrement, published
+              name, description, currency, startingBid, minIncrement, published,
+              donor, donorUrl, showDonor
             </code>
           </div>
         </div>

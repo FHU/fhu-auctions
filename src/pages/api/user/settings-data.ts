@@ -3,6 +3,7 @@ import type { ApiHandler } from "@/lib/api/types";
 import * as userService from "@/lib/services/user.service";
 import * as systemService from "@/lib/services/system.service";
 import { createLogger } from "@/lib/logger";
+import { releasesApiUrl } from "@/lib/release-source";
 
 const settingsLogger = createLogger("settings-api");
 
@@ -42,17 +43,17 @@ const getSettingsData: ApiHandler = async (_req, res, ctx) => {
       const packageJson = await import("../../../../package.json");
       const currentVersion = packageJson.version;
 
-      const response = await fetch(
-        "https://api.github.com/repos/thomsa/auktiva/releases/latest",
-        {
-          headers: {
-            Accept: "application/vnd.github.v3+json",
-            "User-Agent": "Auktiva",
-          },
-        },
-      );
+      const url = releasesApiUrl("/releases/latest");
+      const response = url
+        ? await fetch(url, {
+            headers: {
+              Accept: "application/vnd.github.v3+json",
+              "User-Agent": "Auktiva",
+            },
+          })
+        : null;
 
-      if (response.ok) {
+      if (response?.ok) {
         const release = await response.json();
         const latestVersion = release.tag_name?.replace(/^v/, "") || null;
         const updateAvailable =
