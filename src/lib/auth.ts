@@ -86,9 +86,18 @@ export const authOptions: NextAuthOptions = {
     error: "/login",
   },
   callbacks: {
-    async signIn({ user, account }) {
+    async signIn({ user, account, profile }) {
       // List of OAuth providers we handle
       const oauthProviders = ["google", "azure-ad"];
+
+      // Only trust Google emails that Google itself has verified
+      if (
+        account?.provider === "google" &&
+        (profile as { email_verified?: boolean } | undefined)
+          ?.email_verified === false
+      ) {
+        return false;
+      }
 
       // For OAuth sign-ins, create or link user account
       if (account && oauthProviders.includes(account.provider) && user.email) {
@@ -131,12 +140,23 @@ export const authOptions: NextAuthOptions = {
             !existingUser.image ||
             !existingUser.emailVerified
           ) {
+            // Security: an unverified account may have been registered by
+            // someone else using this email (pre-account-takeover). Its
+            // password and display name were never proven to belong to the
+            // inbox owner, so drop the password (the owner can set one via
+            // "Forgot password") and prefer the provider's name.
+            const wasUnverified = !existingUser.emailVerified;
             await prisma.user.update({
               where: { id: existingUser.id },
               data: {
-                name: existingUser.name || user.name,
+                name: wasUnverified
+                  ? user.name || existingUser.name
+                  : existingUser.name || user.name,
                 image: existingUser.image || user.image,
                 emailVerified: existingUser.emailVerified || new Date(),
+                ...(wasUnverified && existingUser.passwordHash
+                  ? { passwordHash: null }
+                  : {}),
               },
             });
           }

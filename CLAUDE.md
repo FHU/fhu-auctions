@@ -52,6 +52,10 @@ export default createHandler({
 - **Services** (`src/lib/services/*.service.ts`): Prisma access and business logic, plus realtime publishing.
 - **Errors**: throw `ApiError` subclasses from `src/lib/api/errors.ts` (`NotFoundError`, `ForbiddenError`, `ValidationError`, …). `createHandler` converts them to `{ message, code, ...details }` JSON responses; anything else becomes a logged 500.
 
+### Site roles (FHU)
+
+`User.siteRole` (`USER` | `ORGANIZER` | `SITE_ADMIN`) is separate from per-auction `MemberRole`. Only organizers and site admins can create auctions (`requireOrganizer` on `POST /api/auctions`; `/auctions/create` redirects others). Site admins manage roles at `/admin/users` (`requireSiteAdmin`). Emails in `SITE_ADMIN_EMAILS` are always site admins. Rules live in `src/lib/site-roles.ts`; DB access in `src/lib/services/site-role.service.ts`.
+
 ### Pages and auth
 
 Pages use `getServerSideProps`. Protected pages wrap it with `withAuth` from `src/lib/auth/withAuth.ts` (a *different* `withAuth` from the API middleware) which redirects to login with a `redirectUrl`. NextAuth config lives in `src/lib/auth.ts`.

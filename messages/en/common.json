@@ -53,7 +53,8 @@
     "features": "Features",
     "howItWorks": "How it Works",
     "docs": "Docs",
-    "adminPanel": "Auction Admin"
+    "adminPanel": "Auction Admin",
+    "manageUsers": "Manage Users"
   },
   "admin": {
     "title": "Auction Admin",

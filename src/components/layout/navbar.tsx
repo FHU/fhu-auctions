@@ -28,7 +28,7 @@ export function Navbar({ user }: NavbarProps) {
   const [mobileNotificationsOpen, setMobileNotificationsOpen] = useState(false);
 
   const { unreadCount } = useNotifications();
-  const { isUserAuctionAdmin } = useAppContext();
+  const { isUserAuctionAdmin, isSiteAdmin } = useAppContext();
 
   useEffect(() => {
     // This is an intentional hydration pattern to prevent SSR mismatch
@@ -177,6 +177,17 @@ export function Navbar({ user }: NavbarProps) {
                   >
                     <span className="icon-[tabler--shield-check] size-4"></span>
                     {t("adminPanel")}
+                  </Link>
+                </li>
+              )}
+              {isSiteAdmin && (
+                <li>
+                  <Link
+                    href="/admin/users"
+                    className="active:bg-primary/10 active:text-primary"
+                  >
+                    <span className="icon-[tabler--users] size-4 opacity-70"></span>
+                    {t("manageUsers")}
                   </Link>
                 </li>
               )}

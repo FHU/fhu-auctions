@@ -117,7 +117,34 @@
       "title": "Quick Links",
       "documentation": "Documentation",
       "feedback": "Send Feedback",
-      "signOut": "Sign Out"
+      "signOut": "Sign Out",
+      "manageUsers": "Manage Users"
     }
+  },
+  "siteAdmin": {
+    "seoTitle": "Manage Users",
+    "title": "Manage Users",
+    "subtitle": "Choose who can create auctions. Everyone else can join auctions and bid.",
+    "searchPlaceholder": "Search by name or email",
+    "columns": {
+      "user": "User",
+      "joined": "Joined",
+      "role": "Site role"
+    },
+    "roles": {
+      "USER": "Bidder",
+      "ORGANIZER": "Organizer",
+      "SITE_ADMIN": "Site admin"
+    },
+    "roleHelp": {
+      "USER": "Can join auctions and bid.",
+      "ORGANIZER": "Can also create auctions.",
+      "SITE_ADMIN": "Can also manage users on this page."
+    },
+    "managedByEnv": "Set by SITE_ADMIN_EMAILS",
+    "you": "You",
+    "noUsers": "No users match your search.",
+    "roleUpdated": "{name} is now: {role}",
+    "updateFailed": "Couldn't update the role. Please try again."
   }
 }

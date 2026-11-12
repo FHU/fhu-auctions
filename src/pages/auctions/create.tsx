@@ -9,6 +9,8 @@ import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { getMessages, Locale } from "@/i18n";
 import { useTranslations } from "next-intl";
 import { withAuth } from "@/lib/auth/withAuth";
+import { getUserSiteRole } from "@/lib/services/site-role.service";
+import { canCreateAuctions } from "@/lib/site-roles";
 
 interface CreateAuctionProps {
   user: {
@@ -344,6 +346,12 @@ export default function CreateAuctionPage({
 }
 
 export const getServerSideProps = withAuth(async (context) => {
+  // FHU: only approved organizers (and site admins) can create auctions
+  const siteRole = await getUserSiteRole(context.session.user.id);
+  if (!canCreateAuctions(siteRole)) {
+    return { redirect: { destination: "/dashboard", permanent: false } };
+  }
+
   const messages = await getMessages(context.locale as Locale);
 
   return {

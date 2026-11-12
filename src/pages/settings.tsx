@@ -19,6 +19,8 @@ import {
   releasesApiUrl,
 } from "@/lib/release-source";
 import { brand, supportMailto } from "@/config/brand";
+import Link from "next/link";
+import { useAppContext } from "@/contexts/AppContext";
 
 const settingsLogger = createLogger("settings");
 
@@ -72,6 +74,7 @@ export default function SettingsPage({
 }: SettingsPageProps) {
   const { theme, setTheme } = useTheme();
   const t = useTranslations("settings");
+  const { isSiteAdmin } = useAppContext();
   const tErrors = useTranslations("errors");
 
   // Profile form state
@@ -1112,6 +1115,17 @@ export default function SettingsPage({
           </h2>
 
           <div className="space-y-2">
+            {isSiteAdmin && (
+              <Link
+                href="/admin/users"
+                className="flex items-center gap-3 p-3 rounded-xl bg-base-200/50 hover:bg-base-200 transition-colors"
+              >
+                <span className="icon-[tabler--users] size-5 text-primary"></span>
+                <span className="font-medium">
+                  {t("quickLinks.manageUsers")}
+                </span>
+              </Link>
+            )}
             {brand.helpUrl && (
               <a
                 href={brand.helpUrl}
