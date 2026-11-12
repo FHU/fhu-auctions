@@ -164,6 +164,11 @@ model Auction {
   defaultAntiSnipe             Boolean  @default(false)   // Whether new items get anti-snipe by default
   defaultAntiSnipeThreshold    Int      @default(300)     // Seconds before end that triggers extension (60-3600)
   defaultAntiSnipeExtension    Int      @default(300)     // Seconds to extend by (5-3600)
+
+  // Payment & pickup (FHU: settlement happens offline; shown to bidders and winners)
+  paymentUrl          String?   // e.g. an FHU giving page for this auction
+  paymentInstructions String?   // Plain text, newlines preserved
+  pickupInstructions  String?   // Plain text, newlines preserved
   
   // Metadata
   createdAt         DateTime          @default(now())
@@ -382,6 +387,11 @@ model AuctionItem {
   
   // Discussions
   discussionsEnabled Boolean   @default(true)  // Admin/creator can toggle
+
+  // Donor credit (FHU). Recorded for Advancement even when hidden publicly.
+  donorName       String?
+  donorUrl        String?
+  showDonor       Boolean   @default(true)  // false = anonymous to bidders
   
   // Relations
   images          AuctionItemImage[]

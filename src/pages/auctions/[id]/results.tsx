@@ -4,6 +4,7 @@ import { PageLayout, BackLink, EmptyState } from "@/components/common";
 import { StatsCard } from "@/components/ui/stats-card";
 import { getMessages, Locale } from "@/i18n";
 import { useTranslations } from "next-intl";
+import { PaymentPickupInfo } from "@/components/auction";
 import { withAuth } from "@/lib/auth/withAuth";
 import { formatAuctionBidDisplay } from "@/lib/currency-display";
 
@@ -45,6 +46,9 @@ interface ResultsPageProps {
     description: string | null;
     endDate: string | null;
     isEnded: boolean;
+    paymentUrl: string | null;
+    paymentInstructions: string | null;
+    pickupInstructions: string | null;
   };
   winners: Winner[];
   userWins: Winner[];
@@ -63,6 +67,7 @@ export default function ResultsPage({
   isAdmin,
 }: ResultsPageProps) {
   const t = useTranslations("auction.results");
+  const tPayment = useTranslations("auction.payment");
   const tCommon = useTranslations("common");
   const tAuction = useTranslations("auction");
   const tStatus = useTranslations("status");
@@ -252,6 +257,19 @@ export default function ResultsPage({
                       </span>
                     </div>
                   </div>
+                  {/* How to pay & pick up (FHU) */}
+                  <PaymentPickupInfo
+                    className="mt-6 pt-6 border-t border-primary/10"
+                    title={
+                      auction.isEnded
+                        ? tPayment("winnerTitle")
+                        : tPayment("sectionTitle")
+                    }
+                    paymentUrl={auction.paymentUrl}
+                    paymentInstructions={auction.paymentInstructions}
+                    pickupInstructions={auction.pickupInstructions}
+                    showEmptyNote
+                  />
                 </div>
               )}
             </div>

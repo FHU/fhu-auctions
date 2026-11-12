@@ -8,6 +8,7 @@ import {
 import * as itemService from "@/lib/services/item.service";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
+import { donorFieldsSchema, redactDonor } from "@/lib/charity-fields";
 
 // ============================================================================
 // Schemas
@@ -31,6 +32,7 @@ export const createItemSchema = z.object({
   antiSnipeEnabled: z.boolean().optional(),
   antiSnipeThresholdSeconds: z.number().int().min(60).max(3600).optional(),
   antiSnipeExtensionSeconds: z.number().int().min(5).max(3600).optional(),
+  ...donorFieldsSchema,
 });
 
 export const updateItemSchema = z.object({
@@ -51,6 +53,7 @@ export const updateItemSchema = z.object({
   antiSnipeEnabled: z.boolean().optional(),
   antiSnipeThresholdSeconds: z.number().int().min(60).max(3600).optional(),
   antiSnipeExtensionSeconds: z.number().int().min(5).max(3600).optional(),
+  ...donorFieldsSchema,
 });
 
 export type CreateItemBody = z.infer<typeof createItemSchema>;
@@ -65,7 +68,16 @@ export type UpdateItemBody = z.infer<typeof updateItemSchema>;
  */
 export const listItems: ApiHandler = async (_req, res, ctx) => {
   const items = await itemService.getAuctionItems(ctx.params.id);
-  res.status(200).json(items);
+  // Hide anonymous donors except from the item creator and auction owners/admins
+  const viewerId = ctx.session!.user.id;
+  const isAuctionAdmin = ["OWNER", "ADMIN"].includes(ctx.membership!.role);
+  res
+    .status(200)
+    .json(
+      items.map((item) =>
+        redactDonor(item, isAuctionAdmin || item.creatorId === viewerId),
+      ),
+    );
 };
 
 /**
@@ -145,8 +157,13 @@ export const getItem: ApiHandler = async (_req, res, ctx) => {
     item.endDate ? new Date(item.endDate) : null,
   );
 
+  // Hide anonymous donors except from the item creator and auction owners/admins
+  const canSeeHiddenDonor =
+    item.creator.id === ctx.session!.user.id ||
+    ["OWNER", "ADMIN"].includes(membership.role);
+
   res.status(200).json({
-    item,
+    item: redactDonor(item, canSeeHiddenDonor),
     bids,
     winnerEmail,
   });

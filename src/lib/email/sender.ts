@@ -36,7 +36,9 @@ function renderTemplate(
 
   let rendered = mjmlTemplate;
   for (const [key, value] of Object.entries(replacements)) {
-    rendered = rendered.replace(new RegExp(key, "g"), value);
+    // Literal replacement: "$" in values (e.g. "Pay $20") must not be treated
+    // as a String.replace pattern like "$&" or "$'"
+    rendered = rendered.split(key).join(value);
   }
   const { html, errors } = mjml2html(rendered);
   if (errors.length > 0) {

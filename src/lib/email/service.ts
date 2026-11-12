@@ -343,8 +343,14 @@ export async function queueItemWonEmail(params: {
   winningAmount: number;
   currencySymbol: string;
   normalizedAmount?: number;
+  paymentUrl?: string | null;
+  paymentInstructions?: string | null;
+  pickupInstructions?: string | null;
 }): Promise<boolean> {
   const {
+    paymentUrl,
+    paymentInstructions,
+    pickupInstructions,
     winnerId,
     winnerEmail,
     winnerName,
@@ -387,6 +393,9 @@ export async function queueItemWonEmail(params: {
       currencySymbol,
       normalizedAmount,
       appUrl: APP_URL,
+      paymentUrl,
+      paymentInstructions,
+      pickupInstructions,
     });
 
     const result = await sendEmail({

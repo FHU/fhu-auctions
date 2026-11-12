@@ -1,4 +1,6 @@
 export * from "./ItemCard";
+export * from "./DonorFields";
+export * from "./DonorCredit";
 export * from "./ItemListItem";
 export * from "./ItemGallery";
 export * from "./BidForm";

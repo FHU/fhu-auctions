@@ -18,6 +18,8 @@ interface ItemListItemProps {
     highestBidderId?: string | null;
     userHasBid?: boolean;
     isPublished?: boolean;
+    /** Donor credit (FHU); already hidden server-side for anonymous donors */
+    donorName?: string | null;
     _count: {
       bids: number;
     };
@@ -138,6 +140,12 @@ export function ItemListItem({
               </div>
             )}
           </div>
+          {item.donorName && (
+            <p className="text-xs text-base-content/70 truncate">
+              {t("item.donor.donatedBy")}{" "}
+              <span className="font-medium">{item.donorName}</span>
+            </p>
+          )}
           {item.description && (
             <p className="text-sm text-base-content/60 truncate">
               {stripHtmlTags(item.description)}

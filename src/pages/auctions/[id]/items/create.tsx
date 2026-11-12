@@ -10,6 +10,7 @@ import { DurationInput } from "@/components/ui/duration-input";
 import { useToast } from "@/components/ui/toast";
 import { ImageUpload } from "@/components/upload/image-upload";
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
+import { DonorFields, readDonorFields } from "@/components/item";
 import { getMessages, Locale } from "@/i18n";
 import { useTranslations } from "next-intl";
 import { withAuth } from "@/lib/auth/withAuth";
@@ -137,6 +138,7 @@ export default function CreateItemPage({
       discussionsEnabled: formData.get("discussionsEnabled") === "on",
       isEditableByAdmin: formData.get("isEditableByAdmin") === "on",
       antiSnipeEnabled: formData.get("antiSnipeEnabled") === "on",
+      ...readDonorFields(formData),
       antiSnipeThresholdSeconds: antiSnipeThreshold,
       antiSnipeExtensionSeconds: antiSnipeExtension,
     };
@@ -391,6 +393,19 @@ export default function CreateItemPage({
                     </div>
                   )}
                 </div>
+
+                {/* Donor (FHU) */}
+                <div className="divider opacity-50"></div>
+                <DonorFields
+                  errors={{
+                    donorName: fieldErrors.donorName
+                      ? String(fieldErrors.donorName)
+                      : undefined,
+                    donorUrl: fieldErrors.donorUrl
+                      ? String(fieldErrors.donorUrl)
+                      : undefined,
+                  }}
+                />
 
                 {/* Pricing */}
                 <div className="divider opacity-50"></div>

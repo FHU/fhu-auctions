@@ -219,6 +219,22 @@
       "or": "or",
       "createAccount": "Create Account",
       "poweredBy": "Powered by {appName}"
+    },
+    "payment": {
+      "sectionTitle": "Payment & pickup",
+      "sectionDescription": "Tell winners how to pay and collect their items. Bidders see this on the auction page, and winners also get it with their results.",
+      "paymentUrl": "Payment link",
+      "paymentUrlHint": "Optional. For example, an FHU giving page for this auction. Must start with https://",
+      "paymentUrlPlaceholder": "https://",
+      "paymentInstructions": "How to pay",
+      "paymentInstructionsPlaceholder": "e.g. Pay at the Business Office in Old Main, or online using the link above (choose the \"Spring Gala\" fund).",
+      "pickupInstructions": "Pickup instructions",
+      "pickupInstructionsPlaceholder": "e.g. Pick up items in the Student Center lobby, Mon–Fri 9am–4pm, within two weeks.",
+      "howToPay": "How to pay",
+      "payOnline": "Pay online",
+      "pickup": "Picking up your item",
+      "winnerTitle": "You won! Here's how to pay and pick up",
+      "noInfo": "The organizer hasn't added payment instructions yet. Contact them for next steps."
     }
   }
 }

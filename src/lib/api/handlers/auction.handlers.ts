@@ -3,6 +3,7 @@ import type { ValidatedRequest } from "@/lib/api/middleware";
 import { NotFoundError, BadRequestError } from "@/lib/api/errors";
 import * as auctionService from "@/lib/services/auction.service";
 import { z } from "zod";
+import { paymentFieldsSchema } from "@/lib/charity-fields";
 
 // ============================================================================
 // Schemas
@@ -19,6 +20,7 @@ export const createAuctionSchema = z.object({
   defaultAntiSnipe: z.boolean().optional(),
   defaultAntiSnipeThreshold: z.number().int().min(60).max(3600).optional(),
   defaultAntiSnipeExtension: z.number().int().min(5).max(3600).optional(),
+  ...paymentFieldsSchema,
 });
 
 export const updateAuctionSchema = z.object({
@@ -33,6 +35,7 @@ export const updateAuctionSchema = z.object({
   defaultAntiSnipe: z.boolean().optional(),
   defaultAntiSnipeThreshold: z.number().int().min(60).max(3600).optional(),
   defaultAntiSnipeExtension: z.number().int().min(5).max(3600).optional(),
+  ...paymentFieldsSchema,
 });
 
 export type CreateAuctionBody = z.infer<typeof createAuctionSchema>;

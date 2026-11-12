@@ -11,6 +11,7 @@ import { getMessages, Locale } from "@/i18n";
 import { useConfirmDialog } from "@/hooks/ui";
 import { useTranslations } from "next-intl";
 import { withAuth } from "@/lib/auth/withAuth";
+import { PaymentPickupFields } from "@/components/auction";
 
 interface AuctionSettingsProps {
   user: {
@@ -33,6 +34,9 @@ interface AuctionSettingsProps {
     defaultAntiSnipe: boolean;
     defaultAntiSnipeThreshold: number;
     defaultAntiSnipeExtension: number;
+    paymentUrl: string | null;
+    paymentInstructions: string | null;
+    pickupInstructions: string | null;
   };
   allowOpenAuctions: boolean;
 }
@@ -111,6 +115,9 @@ export default function AuctionSettingsPage({
     defaultAntiSnipe: auction.defaultAntiSnipe,
     defaultAntiSnipeThreshold: auction.defaultAntiSnipeThreshold,
     defaultAntiSnipeExtension: auction.defaultAntiSnipeExtension,
+    paymentUrl: auction.paymentUrl || "",
+    paymentInstructions: auction.paymentInstructions || "",
+    pickupInstructions: auction.pickupInstructions || "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -400,6 +407,19 @@ export default function AuctionSettingsPage({
                 />
               </div>
             </div>
+
+            {/* Payment & Pickup (FHU) */}
+            <div className="divider opacity-50"></div>
+            <PaymentPickupFields
+              values={{
+                paymentUrl: formData.paymentUrl,
+                paymentInstructions: formData.paymentInstructions,
+                pickupInstructions: formData.pickupInstructions,
+              }}
+              onChange={(field, value) =>
+                setFormData((prev) => ({ ...prev, [field]: value }))
+              }
+            />
 
             {/* Access Settings */}
             <div className="divider opacity-50"></div>
@@ -1194,6 +1214,9 @@ export const getServerSideProps = withAuth(async (context) => {
         defaultAntiSnipe: auction.defaultAntiSnipe,
         defaultAntiSnipeThreshold: auction.defaultAntiSnipeThreshold,
         defaultAntiSnipeExtension: auction.defaultAntiSnipeExtension,
+        paymentUrl: auction.paymentUrl,
+        paymentInstructions: auction.paymentInstructions,
+        pickupInstructions: auction.pickupInstructions,
       },
       allowOpenAuctions: process.env.ALLOW_OPEN_AUCTIONS === "true",
       messages: await getMessages(context.locale as Locale),

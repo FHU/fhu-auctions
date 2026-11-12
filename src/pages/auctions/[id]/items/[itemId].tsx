@@ -7,6 +7,8 @@ import { ItemsSidebar, SidebarItem } from "@/components/item/ItemsSidebar";
 import { DiscussionSection } from "@/components/item/DiscussionSection";
 import { Button } from "@/components/ui/button";
 import { RichTextRenderer } from "@/components/ui/rich-text-editor";
+import { PaymentPickupInfo } from "@/components/auction";
+import { DonorCredit } from "@/components/item";
 import { useToast } from "@/components/ui/toast";
 import { usePollingInterval } from "@/hooks/ui";
 import {
@@ -71,6 +73,9 @@ interface ItemDetailProps {
     id: string;
     name: string;
     bidderVisibility: string;
+    paymentUrl: string | null;
+    paymentInstructions: string | null;
+    pickupInstructions: string | null;
   };
   auctionItems: SidebarItem[];
   itemSidebarCollapsed: boolean;
@@ -96,6 +101,9 @@ interface ItemDetailProps {
     antiSnipeEnabled: boolean;
     antiSnipeThresholdSeconds: number;
     antiSnipeExtensionSeconds: number;
+    donorName: string | null;
+    donorUrl: string | null;
+    showDonor: boolean;
     creator: {
       id: string;
       name: string | null;
@@ -157,6 +165,7 @@ export default function ItemDetailPage({
   images,
 }: ItemDetailProps) {
   const t = useTranslations("item");
+  const tPayment = useTranslations("auction.payment");
   const tCommon = useTranslations("common");
   const tStatus = useTranslations("status");
   const tTime = useTranslations("time");
@@ -580,6 +589,12 @@ export default function ItemDetailPage({
                               {item.creator.name || item.creator.email}
                             </span>
                           </div>
+                          <DonorCredit
+                            className="mt-2"
+                            donorName={item.donorName}
+                            donorUrl={item.donorUrl}
+                            showDonor={item.showDonor}
+                          />
                         </div>
 
                         <div className="flex gap-2 self-start w-full sm:w-auto flex-col items-end">
@@ -846,6 +861,18 @@ export default function ItemDetailPage({
                             {t("bid.highestBidder")}
                           </span>
                         </div>
+                      )}
+
+                      {/* Winner: how to pay & pick up (FHU) */}
+                      {isHighestBidder && isEnded && (
+                        <PaymentPickupInfo
+                          className="mb-6 p-4 border border-base-300 border-t-4 border-t-primary bg-base-100"
+                          title={tPayment("winnerTitle")}
+                          paymentUrl={auction.paymentUrl}
+                          paymentInstructions={auction.paymentInstructions}
+                          pickupInstructions={auction.pickupInstructions}
+                          showEmptyNote
+                        />
                       )}
 
                       {item.endDate && (
@@ -1219,6 +1246,9 @@ export const getServerSideProps = withAuth(async (context) => {
         id: membership.auction.id,
         name: membership.auction.name,
         bidderVisibility: membership.auction.bidderVisibility,
+        paymentUrl: membership.auction.paymentUrl,
+        paymentInstructions: membership.auction.paymentInstructions,
+        pickupInstructions: membership.auction.pickupInstructions,
       },
       auctionItems,
       itemSidebarCollapsed: userSettings?.itemSidebarCollapsed ?? false,

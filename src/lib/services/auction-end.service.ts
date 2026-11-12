@@ -23,7 +23,15 @@ export async function processEndedItems(): Promise<number> {
       },
       include: {
         currency: { select: { symbol: true } },
-        auction: { select: { id: true, name: true } },
+        auction: {
+          select: {
+            id: true,
+            name: true,
+            paymentUrl: true,
+            paymentInstructions: true,
+            pickupInstructions: true,
+          },
+        },
       },
       take: 50, // Process max 50 at a time to avoid long-running queries
     });
@@ -69,6 +77,9 @@ export async function processEndedItems(): Promise<number> {
               auctionName: item.auction.name,
               winningAmount: item.currentBid!,
               currencySymbol: item.currency.symbol,
+              paymentUrl: item.auction.paymentUrl,
+              paymentInstructions: item.auction.paymentInstructions,
+              pickupInstructions: item.auction.pickupInstructions,
             });
           }
 

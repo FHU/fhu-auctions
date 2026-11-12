@@ -8,6 +8,7 @@ import * as itemService from "@/lib/services/item.service";
 import { PageLayout, BackLink, ConfirmDialog } from "@/components/common";
 import { ImageUpload } from "@/components/upload/image-upload";
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
+import { DonorFields, readDonorFields } from "@/components/item";
 import { Button } from "@/components/ui/button";
 import { DurationInput } from "@/components/ui/duration-input";
 import { useConfirmDialog } from "@/hooks/ui";
@@ -58,6 +59,9 @@ interface EditItemProps {
     antiSnipeEnabled: boolean;
     antiSnipeThresholdSeconds: number;
     antiSnipeExtensionSeconds: number;
+    donorName: string | null;
+    donorUrl: string | null;
+    showDonor: boolean;
     minBidConstraint?: Record<string, unknown> | null;
     minBidNormalized?: number | null;
     minIncrementNormalized?: number | null;
@@ -154,6 +158,7 @@ export default function EditItemPage({
       })(),
       bidderAnonymous: formData.get("bidderAnonymous") === "on",
       endDate: (formData.get("endDate") as string) || null,
+      ...readDonorFields(formData),
       discussionsEnabled,
       isEditableByAdmin,
       antiSnipeEnabled,
@@ -464,6 +469,20 @@ export default function EditItemPage({
                 </div>
               )}
             </div>
+
+            {/* Donor (FHU) */}
+            <div className="divider opacity-50"></div>
+            <DonorFields
+              defaultValues={{
+                donorName: item.donorName,
+                donorUrl: item.donorUrl,
+                showDonor: item.showDonor,
+              }}
+              errors={{
+                donorName: fieldErrors.donorName?.[0],
+                donorUrl: fieldErrors.donorUrl?.[0],
+              }}
+            />
 
             {/* Images */}
             <div className="divider opacity-50"></div>
