@@ -22,7 +22,7 @@ body = """
         - {% if commit.scope %}**{{ commit.scope }}**: {% endif %}\
             {{ commit.message | upper_first }}\
             {% if commit.github.username %} by @{{ commit.github.username }}{%- endif %}\
-            {% if commit.github.pr_number %} in [#{{ commit.github.pr_number }}](https://github.com/thomsa/auktiva/pull/{{ commit.github.pr_number }}){%- endif %}\
+            {% if commit.github.pr_number %} in [#{{ commit.github.pr_number }}](https://github.com/FHU/fhu-auctions/pull/{{ commit.github.pr_number }}){%- endif %}\
     {% endfor %}
 {% endfor %}\n
 """
@@ -82,5 +82,5 @@ topo_order = false
 sort_commits = "newest"
 
 [remote.github]
-owner = "thomsa"
-repo = "auktiva"
+owner = "FHU"
+repo = "fhu-auctions"

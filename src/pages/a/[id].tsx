@@ -78,8 +78,6 @@ export default function PublicAuctionPage({
       <div className="min-h-screen bg-base-200 flex items-center justify-center px-4 relative overflow-hidden">
         {/* Background effects */}
         <div className="absolute inset-0 z-0">
-          <div className="absolute top-0 right-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[128px] animate-pulse"></div>
-          <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-secondary/20 rounded-full blur-[128px] animate-pulse delay-1000"></div>
           <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-[0.03]"></div>
         </div>
 
@@ -88,7 +86,6 @@ export default function PublicAuctionPage({
             {/* Header */}
             <div className="text-center mb-6">
               <div className="inline-flex relative">
-                <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full"></div>
                 {auction.thumbnailUrl ? (
                   <picture>
                     <img
@@ -98,12 +95,12 @@ export default function PublicAuctionPage({
                     />
                   </picture>
                 ) : (
-                  <div className="w-24 h-24 bg-linear-to-br from-primary/10 to-secondary/10 rounded-3xl flex items-center justify-center relative z-10 border border-base-content/5 rotate-3">
+                  <div className="w-24 h-24 bg-primary/10 rounded-3xl flex items-center justify-center relative z-10 border border-base-content/5">
                     <span className="icon-[tabler--gavel] size-12 text-primary -rotate-3"></span>
                   </div>
                 )}
               </div>
-              <h1 className="text-3xl font-extrabold mt-6 bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent">
+              <h1 className="text-3xl font-extrabold mt-6 text-primary">
                 {auction.name}
               </h1>
               {auction.creatorName && (

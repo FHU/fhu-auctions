@@ -1,4 +1,5 @@
 import { renderLayout, theme, escapeHtml } from "../layout";
+import { brand } from "@/config/brand";
 
 const content = `
     <mj-text font-size="22px" font-weight="600" color="${theme.colors.text.main}">
@@ -23,7 +24,7 @@ const content = `
 
 export const inviteTemplate = renderLayout({
   title: "You've Been Invited!",
-  previewText: "You've been invited to join an auction on Auktiva",
+  previewText: `You've been invited to join an auction on ${brand.appName}`,
   content,
 });
 

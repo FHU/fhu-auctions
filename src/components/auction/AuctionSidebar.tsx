@@ -116,7 +116,7 @@ export function AuctionSidebar({ auction, membership }: AuctionSidebarProps) {
             <div className="absolute inset-0 bg-gradient-to-t from-base-100 to-transparent opacity-60"></div>
           </figure>
         ) : (
-          <div className="h-24 bg-gradient-to-br from-primary/5 to-secondary/5 border-b border-base-content/5 flex items-center justify-center">
+          <div className="h-24 bg-primary/5 border-b border-base-content/5 flex items-center justify-center">
             <span className="icon-[tabler--gavel] size-8 text-primary/20"></span>
           </div>
         )}

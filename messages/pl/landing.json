@@ -10,8 +10,8 @@
       "demoAlt": "Podgląd interaktywnego demo",
       "bidNow": "Licytuj teraz",
       "showDemo": "Pokaż mi demo",
-      "demoHint": "Kliknij, aby zobaczyć jak działa Auktiva",
-      "demoTitle": "Demo Auktiva",
+      "demoHint": "Kliknij, aby zobaczyć jak działa FHU Auctions",
+      "demoTitle": "Demo FHU Auctions",
       "videoNotSupported": "Twoja przeglądarka nie obsługuje tagu wideo.",
       "close": "Zamknij"
     },
@@ -47,7 +47,7 @@
     "useCases": {
       "sectionTitle": "Idealna na",
       "sectionTitleHighlight": "każdą okazję",
-      "sectionDescription": "Czy to zbiórka funduszy, czy sprzątanie garażu, Auktiva to ułatwia.",
+      "sectionDescription": "Czy to zbiórka funduszy, czy sprzątanie garażu, FHU Auctions to ułatwia.",
       "charity": {
         "title": "Aukcje charytatywne",
         "description": "Organizuj ciche aukcje dla organizacji non-profit, szkół, kościołów i wydarzeń społecznościowych."
@@ -102,11 +102,11 @@
     },
     "cta": {
       "title": "Gotowy, aby rozpocząć aukcję?",
-      "description": "Czy to aukcja charytatywna, czy coroczna wyprzedaż porządkowa, Auktiva jest całkowicie darmowa. Open source, bez opłat, stworzona dla społeczności.",
+      "description": "Czy to aukcja charytatywna, czy coroczna wyprzedaż porządkowa, FHU Auctions jest całkowicie darmowa. Open source, bez opłat, stworzona dla społeczności.",
       "getStarted": "Rozpocznij",
       "freeForever": "Darmowe teraz i na zawsze",
       "selfHostTitle": "Wolisz hostować samodzielnie?",
-      "selfHostDescription": "Uruchom Auktiva na własnym serwerze z pełną kontrolą nad danymi. Jedna komenda, aby zacząć.",
+      "selfHostDescription": "Uruchom FHU Auctions na własnym serwerze z pełną kontrolą nad danymi. Jedna komenda, aby zacząć.",
       "seeDocumentation": "Zobacz <link>dokumentację deweloperską</link>, aby uzyskać więcej szczegółów."
     }
   }

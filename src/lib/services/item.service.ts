@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { brand } from "@/config/brand";
 import { getPublicUrl } from "@/lib/storage";
 import { queueNewItemEmails } from "@/lib/email/service";
 import * as notificationService from "./notification.service";
@@ -854,7 +855,7 @@ export async function createItem(
   });
 
   // Get the first image URL for notifications
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.auktiva.org";
+  const appUrl = brand.siteUrl;
   const firstImageUrl =
     item.images.length > 0
       ? item.images[0].url.startsWith("http")

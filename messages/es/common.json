@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "Auktiva",
+    "appName": "FHU Auctions",
     "loading": "Cargando...",
     "save": "Guardar",
     "cancel": "Cancelar",
@@ -104,7 +104,9 @@
     "termsOfService": "Términos de Servicio",
     "allRightsReserved": "Todos los derechos reservados.",
     "designedBy": "Diseñado y construido por",
-    "description": "Una plataforma de subastas gratuita y de código abierto para recaudación de fondos, organizaciones benéficas y comunidades. Construida con tecnología moderna para eventos modernos.",
+    "poweredBy": "Con tecnología de <link>Auktiva</link>",
+    "contact": "Contacto",
+    "description": "Subastas benéficas en apoyo de los estudiantes, profesores y personal de Freed-Hardeman University",
     "reportIssue": "Reportar problema",
     "github": "GitHub",
     "changelog": "Registro de cambios"
@@ -187,7 +189,7 @@
   },
   "changelog": {
     "title": "Registro de cambios y versiones",
-    "description": "Descubre las novedades de Auktiva y sigue nuestro progreso de desarrollo",
+    "description": "Descubre las novedades de FHU Auctions y sigue nuestro progreso de desarrollo",
     "currentVersion": "Versión actual",
     "latest": "Última",
     "installed": "Instalada",

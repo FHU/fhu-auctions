@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import packageJson from "../../../package.json";
+import { brand, supportMailto } from "@/config/brand";
 
 export function AppFooter() {
   const t = useTranslations();
@@ -19,24 +20,41 @@ export function AppFooter() {
           <span>
             © {currentYear} {t("common.appName")}
           </span>
+          <span className="hidden sm:inline">
+            ·{" "}
+            {t.rich("footer.poweredBy", {
+              link: (chunks) => (
+                <a
+                  href={brand.upstream.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-primary transition-colors"
+                >
+                  {chunks}
+                </a>
+              ),
+            })}
+          </span>
         </div>
         <div className="flex items-center gap-3">
-          <Link
-            href="https://docs.auktiva.org"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-primary transition-colors"
-          >
-            {t("nav.docs")}
-          </Link>
-          <Link
-            href="https://github.com/thomsa/auktiva/issues/new/choose"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-primary transition-colors"
-          >
-            {t("footer.reportIssue")}
-          </Link>
+          {brand.helpUrl && (
+            <Link
+              href={brand.helpUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-primary transition-colors"
+            >
+              {t("nav.docs")}
+            </Link>
+          )}
+          {supportMailto && (
+            <a
+              href={supportMailto}
+              className="hover:text-primary transition-colors"
+            >
+              {t("footer.reportIssue")}
+            </a>
+          )}
         </div>
       </div>
     </footer>

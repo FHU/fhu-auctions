@@ -1,16 +1,16 @@
 name: Question / Support
-description: Ask a question or get help with Auktiva
+description: Ask a question or get help with FHU Auctions
 title: "[Question]: "
 labels: ["question", "help wanted"]
 body:
   - type: markdown
     attributes:
       value: |
-        Have a question about Auktiva? We're happy to help!
+        Have a question about FHU Auctions? We're happy to help!
 
         Before asking, please check:
-        - [Documentation](https://docs.auktiva.org)
-        - [Existing issues](https://github.com/thomsa/auktiva/issues)
+        - [Auktiva documentation (upstream)](https://docs.auktiva.org)
+        - [Existing issues](https://github.com/FHU/fhu-auctions/issues)
 
   - type: textarea
     id: question
@@ -40,10 +40,11 @@ body:
     id: environment
     attributes:
       label: Environment
-      description: Are you using the hosted version or self-hosting?
+      description: Where did this happen?
       options:
-        - Hosted (auktiva.org)
-        - Self-hosted
+        - Production
+        - Staging / test
+        - Local development
         - Not applicable
     validations:
       required: true

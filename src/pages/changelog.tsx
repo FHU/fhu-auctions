@@ -1,10 +1,12 @@
 import Link from "next/link";
+import { BrandLockup } from "@/components/common/BrandLockup";
 import { GetStaticProps } from "next";
 import ReactMarkdown from "react-markdown";
 import { SEO } from "@/components/common";
 import { getMessages, Locale } from "@/i18n";
 import { useTranslations } from "next-intl";
 import packageJson from "../../package.json";
+import { releasesApiUrl } from "@/lib/release-source";
 
 interface GitHubRelease {
   tag_name: string;
@@ -43,19 +45,11 @@ export default function ChangelogPage({
 
       <div className="min-h-screen bg-base-100">
         {/* Navigation */}
-        <nav className="navbar bg-base-100/80 backdrop-blur-lg sticky top-0 z-50 border-b border-base-200">
+        <nav className="navbar bg-fhu-maroon text-white sticky top-0 z-50 border-b-4 border-fhu-gold">
           <div className="container mx-auto px-4">
             <div className="flex-1">
-              <Link
-                href="/"
-                className="text-2xl font-bold flex items-center gap-2 group"
-              >
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-105 transition-transform">
-                  <span className="icon-[tabler--gavel] size-6"></span>
-                </div>
-                <span className="bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent">
-                  {tCommon("appName")}
-                </span>
+              <Link href="/" aria-label={tCommon("appName")}>
+                <BrandLockup variant="white" />
               </Link>
             </div>
           </div>
@@ -83,7 +77,7 @@ export default function ChangelogPage({
             <div className="space-y-8">
               {/* Latest Release - Featured */}
               {latestRelease && (
-                <div className="card bg-linear-to-br from-primary/5 to-secondary/5 border-2 border-primary/20 shadow-xl">
+                <div className="card bg-primary/5 border-2 border-primary/20 shadow-xl">
                   <div className="card-body">
                     <div className="flex items-center gap-3 mb-4">
                       <span className="badge badge-primary badge-lg">
@@ -206,18 +200,19 @@ export const getStaticProps: GetStaticProps<ChangelogPageProps> = async ({
 
   let releases: GitHubRelease[] = [];
 
-  try {
-    const response = await fetch(
-      "https://api.github.com/repos/thomsa/auktiva/releases?per_page=20",
-      {
-        headers: {
-          Accept: "application/vnd.github.v3+json",
-          "User-Agent": "Auktiva-Changelog",
-        },
-      },
-    );
+  const url = releasesApiUrl("/releases?per_page=20");
 
-    if (response.ok) {
+  try {
+    const response = url
+      ? await fetch(url, {
+          headers: {
+            Accept: "application/vnd.github.v3+json",
+            "User-Agent": "Auktiva-Changelog",
+          },
+        })
+      : null;
+
+    if (response?.ok) {
       releases = await response.json();
     }
   } catch (error) {

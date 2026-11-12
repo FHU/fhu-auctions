@@ -1,4 +1,5 @@
 import { renderLayout, theme, escapeHtml } from "../layout";
+import { brand } from "@/config/brand";
 
 const content = `
     <mj-text font-size="22px" font-weight="600" color="${theme.colors.text.main}">
@@ -8,7 +9,7 @@ const content = `
       Hi {{NAME}},
     </mj-text>
     <mj-text>
-      Thank you for creating an Auktiva account! Please verify your email address by clicking the button below.
+      Thank you for creating a ${brand.appName} account! Please verify your email address by clicking the button below.
     </mj-text>
     <mj-button href="{{VERIFICATION_URL}}">
       Verify Email
@@ -18,7 +19,7 @@ const content = `
     </mj-text>
     <mj-divider border-color="${theme.colors.border}" padding="20px 0" />
     <mj-text font-size="12px" color="${theme.colors.text.muted}">
-      If you didn't create an account on Auktiva, you can safely ignore this email.
+      If you didn't create an account on ${brand.appName}, you can safely ignore this email.
     </mj-text>
     <mj-text font-size="12px" color="${theme.colors.text.muted}">
       If you're having trouble clicking the button, copy and paste this URL into your browser:
@@ -30,7 +31,7 @@ const content = `
 
 export const emailVerificationTemplate = renderLayout({
   title: "Verify Your Email",
-  previewText: "Verify your Auktiva email address",
+  previewText: `Verify your ${brand.appName} email address`,
   content,
 });
 

@@ -1,20 +1,20 @@
 import { renderLayout, theme, escapeHtml } from "../layout";
+import { brand } from "@/config/brand";
 
 const content = `
     <mj-text font-size="22px" font-weight="600" color="${theme.colors.text.main}">
-      Welcome to Auktiva, {{NAME}}! 🎉
+      Welcome to ${brand.appName}, {{NAME}}! 🎉
     </mj-text>
     <mj-text>
-      Thank you for joining Auktiva - your private auction platform. We're excited to have you on board!
+      Thank you for joining ${brand.appName}, home of ${brand.orgName}'s charity auctions supporting our students, faculty, and staff.
     </mj-text>
     <mj-text>
-      With Auktiva, you can:
+      With your account, you can:
     </mj-text>
     <mj-text padding-left="20px">
-      • Create and manage private auctions<br/>
-      • Invite friends and colleagues to bid<br/>
-      • Track your bids in real-time<br/>
-      • Customize auction settings to your needs
+      • Browse and join charity auctions<br/>
+      • Place bids and follow them in real time<br/>
+      • Get notified when you're outbid or win an item
     </mj-text>
     <mj-text>
       Ready to get started? Click the button below to explore your dashboard.
@@ -25,8 +25,8 @@ const content = `
 `;
 
 export const welcomeTemplate = renderLayout({
-  title: "Welcome to Auktiva",
-  previewText: "Welcome to Auktiva - Your Private Auction Platform",
+  title: `Welcome to ${brand.appName}`,
+  previewText: `Welcome to ${brand.appName} - ${brand.orgName} charity auctions`,
   content,
 });
 

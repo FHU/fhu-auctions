@@ -10,8 +10,8 @@
       "demoAlt": "Vista previa interactiva de demostración",
       "bidNow": "Pujar Ahora",
       "showDemo": "Ver demostración",
-      "demoHint": "Haz clic para ver cómo funciona Auktiva",
-      "demoTitle": "Demo de Auktiva",
+      "demoHint": "Haz clic para ver cómo funciona FHU Auctions",
+      "demoTitle": "Demo de FHU Auctions",
       "videoNotSupported": "Tu navegador no soporta el elemento de video.",
       "close": "Cerrar"
     },
@@ -47,7 +47,7 @@
     "useCases": {
       "sectionTitle": "Perfecto para",
       "sectionTitleHighlight": "cualquier ocasión",
-      "sectionDescription": "Ya sea para recaudar fondos o limpiar tu garaje, Auktiva lo hace simple.",
+      "sectionDescription": "Ya sea para recaudar fondos o limpiar tu garaje, FHU Auctions lo hace simple.",
       "charity": {
         "title": "Subastas Benéficas",
         "description": "Organiza subastas silenciosas para organizaciones sin fines de lucro, escuelas, iglesias y eventos comunitarios."
@@ -102,11 +102,11 @@
     },
     "cta": {
       "title": "¿Listo para empezar tu subasta?",
-      "description": "Ya sea una subasta benéfica o una venta de limpieza anual, Auktiva es completamente gratis. Código abierto, sin comisiones, creado para comunidades.",
+      "description": "Ya sea una subasta benéfica o una venta de limpieza anual, FHU Auctions es completamente gratis. Código abierto, sin comisiones, creado para comunidades.",
       "getStarted": "Empezar",
       "freeForever": "Es gratis y siempre será gratis",
       "selfHostTitle": "¿Prefieres alojarlo tú mismo?",
-      "selfHostDescription": "Ejecuta Auktiva en tu propio servidor con control total sobre tus datos. Un comando para empezar.",
+      "selfHostDescription": "Ejecuta FHU Auctions en tu propio servidor con control total sobre tus datos. Un comando para empezar.",
       "seeDocumentation": "Mira la <link>documentación para desarrolladores</link> para más detalles."
     }
   }

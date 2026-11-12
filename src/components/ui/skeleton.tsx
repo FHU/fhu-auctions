@@ -48,8 +48,8 @@ export function SkeletonAuctionCard({ className = "" }: SkeletonProps) {
       <div className="card-body">
         <div className="skeleton h-6 w-3/4" />
         <div className="flex gap-2 mt-2">
-          <div className="skeleton h-5 w-16 rounded-full" />
-          <div className="skeleton h-5 w-20 rounded-full" />
+          <div className="skeleton h-5 w-16" />
+          <div className="skeleton h-5 w-20" />
         </div>
         <div className="mt-4 flex justify-between">
           <div className="skeleton h-4 w-24" />
@@ -265,7 +265,7 @@ export function SkeletonBidItemCard() {
         <div className="skeleton h-4 w-3/4" />
         <div className="skeleton h-3 w-1/2" />
         <div className="flex items-center gap-2">
-          <div className="skeleton h-4 w-12 rounded-full" />
+          <div className="skeleton h-4 w-12" />
           <div className="skeleton h-4 w-16" />
         </div>
       </div>
@@ -285,7 +285,7 @@ export function SkeletonListingCard({ className = "" }: SkeletonProps) {
             <div className="skeleton h-5 w-3/4" />
             <div className="skeleton h-4 w-1/2" />
             <div className="flex gap-2 mt-2">
-              <div className="skeleton h-5 w-16 rounded-full" />
+              <div className="skeleton h-5 w-16" />
               <div className="skeleton h-5 w-20" />
             </div>
           </div>
@@ -304,7 +304,7 @@ export function SkeletonListingsPage() {
           <div className="flex items-center gap-2 mb-3">
             <div className="skeleton h-5 w-5 rounded" />
             <div className="skeleton h-6 w-28" />
-            <div className="skeleton h-5 w-6 rounded-full" />
+            <div className="skeleton h-5 w-6" />
           </div>
           <div className="skeleton h-4 w-3/4 mb-4" />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -372,7 +372,7 @@ export function SkeletonHistoryPage() {
       <div className="card bg-base-100/50 backdrop-blur-sm border border-base-content/5 shadow-xl">
         <div className="card-body p-0 sm:p-6">
           <div className="flex items-center gap-2 px-6 pt-6 sm:px-0 sm:pt-0 mb-6">
-            <div className="w-1 h-6 rounded-full bg-secondary"></div>
+            <div className="w-1 h-6 bg-accent"></div>
             <div className="skeleton h-6 w-28" />
           </div>
 
@@ -400,7 +400,7 @@ function SkeletonHistoryMobileCard() {
     <div className="p-4 bg-base-100 rounded-xl border border-base-content/5">
       <div className="flex justify-between items-start mb-3">
         <div className="skeleton h-5 w-32" />
-        <div className="skeleton h-5 w-16 rounded-full" />
+        <div className="skeleton h-5 w-16" />
       </div>
       <div className="flex items-center gap-1 mb-3">
         <div className="skeleton h-3 w-3 rounded" />
@@ -439,7 +439,7 @@ export function SkeletonAuctionPage() {
                 <div className="flex items-center gap-2">
                   <div className="skeleton h-5 w-5 rounded" />
                   <div className="skeleton h-6 w-16" />
-                  <div className="skeleton h-5 w-8 rounded-full" />
+                  <div className="skeleton h-5 w-8" />
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
                   <div className="skeleton h-10 w-32 rounded-lg" />
@@ -522,11 +522,11 @@ export function SkeletonSettingsPage() {
           <div className="space-y-3">
             <div className="flex justify-between items-center">
               <div className="skeleton h-4 w-48" />
-              <div className="skeleton h-6 w-12 rounded-full" />
+              <div className="skeleton h-6 w-12" />
             </div>
             <div className="flex justify-between items-center">
               <div className="skeleton h-4 w-48" />
-              <div className="skeleton h-6 w-12 rounded-full" />
+              <div className="skeleton h-6 w-12" />
             </div>
           </div>
         </div>
@@ -556,7 +556,7 @@ export function SkeletonItemPage() {
                 <div className="skeleton h-8 w-64" />
                 <div className="skeleton h-4 w-40" />
               </div>
-              <div className="skeleton h-8 w-20 rounded-full" />
+              <div className="skeleton h-8 w-20" />
             </div>
 
             {/* Image Gallery */}
@@ -708,7 +708,7 @@ export function SkeletonBulkEditTable() {
                   <div className="skeleton h-4 w-14" />
                 </td>
                 <td>
-                  <div className="skeleton h-5 w-16 rounded-full" />
+                  <div className="skeleton h-5 w-16" />
                 </td>
                 <td>
                   <div className="skeleton h-4 w-8" />

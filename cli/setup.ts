@@ -67,7 +67,7 @@ ${chalk.cyan.bold(`/_/  |_\\__,_/_/|_|\\__/_/ |___/\\__,_/  `)}
 `;
 
 const TAGLINE =
-  "A comprehensive auction platform for hosting private and public auctions";
+  "Charity auctions supporting Freed-Hardeman University students, faculty, and staff";
 
 // =============================================================================
 // TYPES
@@ -356,7 +356,9 @@ async function setupFeatures(): Promise<Partial<EnvConfig>> {
   console.log(chalk.bold("About Open Auctions:"));
   console.log();
   console.log(
-    chalk.dim("  By default, auctions in Auktiva are private. Users can only"),
+    chalk.dim(
+      "  By default, auctions in FHU Auctions are private. Users can only",
+    ),
   );
   console.log(
     chalk.dim("  join an auction if they are explicitly invited by the owner"),
@@ -646,7 +648,7 @@ async function setupEmail(authUrl: string): Promise<Partial<EnvConfig>> {
   // Common email settings
   const mailFrom = await input({
     message: "Sender email address:",
-    default: "noreply@auktiva.org",
+    default: "kcasey@fhu.edu",
     validate: (value) => {
       if (!value.includes("@")) return "Please enter a valid email address";
       return true;
@@ -655,7 +657,7 @@ async function setupEmail(authUrl: string): Promise<Partial<EnvConfig>> {
 
   const mailFromName = await input({
     message: "Sender name:",
-    default: "Auktiva",
+    default: "FHU Auctions",
   });
 
   // Generate CRON_SECRET for securing the retry endpoint
@@ -684,7 +686,9 @@ async function setupRealtime(
   console.log(
     `    ${chalk.cyan("•")} ${chalk.bold("Soketi")} - Self-hosted, free, unlimited`,
   );
-  console.log(chalk.dim("      Runs alongside Auktiva via PM2. Recommended."));
+  console.log(
+    chalk.dim("      Runs alongside FHU Auctions via PM2. Recommended."),
+  );
   console.log();
   console.log(
     `    ${chalk.cyan("•")} ${chalk.bold("Pusher")} - Cloud service, free tier available`,
@@ -1422,14 +1426,14 @@ async function main() {
   // Show logo
   console.log(LOGO);
   console.log();
-  console.log(chalk.bold("  Welcome to the Auktiva Setup Wizard!"));
+  console.log(chalk.bold("  Welcome to the FHU Auctions Setup Wizard!"));
   console.log();
   console.log(chalk.dim(`  ${TAGLINE}`));
   console.log();
   console.log(
     chalk.dim("  This wizard will guide you through configuring your"),
   );
-  console.log(chalk.dim("  self-hosted Auktiva instance."));
+  console.log(chalk.dim("  self-hosted FHU Auctions instance."));
   console.log();
   console.log(chalk.blue("━".repeat(60)));
 

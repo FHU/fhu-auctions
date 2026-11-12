@@ -58,7 +58,7 @@ Pages use `getServerSideProps`. Protected pages wrap it with `withAuth` from `sr
 
 ### i18n
 
-Locales `en, pl, hu, de, es` via Next's built-in i18n routing (`next.config.ts`). Translations are split by namespace in `messages/<locale>/*.json`; `getMessages()` in `src/i18n/getMessages.ts` merges every namespace file, and each page must return `messages` from its `getServerSideProps`/`getStaticProps`. When adding a new namespace file, register it in `getMessages`. New user-facing strings need entries in **all five** locale directories.
+This FHU deployment serves **English only**: `locales` in `src/i18n/config.ts` and `i18n.locales` in `next.config.ts` are `["en"]`, and the language switchers hide themselves when one locale is enabled. Translations for `pl, hu, de, es` are kept (unused) in `messages/` so upstream merges stay clean and a locale can be re-enabled by adding it to both lists. Translations are split by namespace in `messages/<locale>/*.json`; `getMessages()` in `src/i18n/getMessages.ts` merges every namespace file, and each page must return `messages` from its `getServerSideProps`/`getStaticProps`. When adding a new namespace file, register it in `getMessages`. New user-facing strings need an entry in `messages/en/` only.
 
 ### Database
 

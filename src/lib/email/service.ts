@@ -22,9 +22,10 @@ import {
   getItemWonTemplateData,
 } from "./templates";
 import { createLogger } from "@/lib/logger";
+import { brand } from "@/config/brand";
 
 const emailServiceLogger = createLogger("email-service");
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://www.auktiva.org";
+const APP_URL = brand.siteUrl;
 
 /**
  * Environment info:
@@ -62,7 +63,7 @@ export async function queueWelcomeEmail(params: {
     const result = await sendEmail({
       to: email,
       toName: name,
-      subject: "Welcome to Auktiva! 🎉",
+      subject: `Welcome to ${brand.appName}! 🎉`,
       mjmlTemplate: templateData.template,
       replacements: templateData.replacements,
       type: "WELCOME",
@@ -113,7 +114,7 @@ export async function queueInviteEmail(params: {
 
     const result = await sendEmail({
       to: email,
-      subject: `You're invited to "${auctionName}" on Auktiva`,
+      subject: `You're invited to "${auctionName}" on ${brand.appName}`,
       mjmlTemplate: templateData.template,
       replacements: templateData.replacements,
       type: "INVITE",

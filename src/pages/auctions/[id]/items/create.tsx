@@ -121,7 +121,8 @@ export default function CreateItemPage({
       minBidNormalized:
         parseFloat(formData.get("minBidNormalized") as string) || undefined,
       minIncrementNormalized:
-        parseFloat(formData.get("minIncrementNormalized") as string) || undefined,
+        parseFloat(formData.get("minIncrementNormalized") as string) ||
+        undefined,
       minBidConstraint: (() => {
         const raw = formData.get("minBidConstraint") as string;
         if (!raw) return undefined;
@@ -381,7 +382,10 @@ export default function CreateItemPage({
                       />
                       <label className="label">
                         <span className="label-text-alt text-base-content/60">
-                          Currency profiles: {auctionCurrencyProfiles.map((p) => `${p.name} (${p.symbol})`).join(", ")}
+                          Currency profiles:{" "}
+                          {auctionCurrencyProfiles
+                            .map((p) => `${p.name} (${p.symbol})`)
+                            .join(", ")}
                         </span>
                       </label>
                     </div>
@@ -468,7 +472,7 @@ export default function CreateItemPage({
                   <>
                     <div className="divider opacity-50"></div>
                     <div className="space-y-4">
-                      <h2 className="text-lg font-semibold flex items-center gap-2 text-accent">
+                      <h2 className="text-lg font-semibold flex items-center gap-2 text-secondary">
                         <span className="icon-[tabler--eye] size-5"></span>
                         {tAuction("create.biddingSettings")}
                       </h2>
@@ -529,7 +533,7 @@ export default function CreateItemPage({
                 {/* Comments Settings */}
                 <div className="divider opacity-50"></div>
                 <div className="space-y-4">
-                  <h2 className="text-lg font-semibold flex items-center gap-2 text-accent">
+                  <h2 className="text-lg font-semibold flex items-center gap-2 text-secondary">
                     <span className="icon-[tabler--message-circle] size-5"></span>
                     {tDiscussions("settings")}
                   </h2>
@@ -855,9 +859,8 @@ export const getServerSideProps = withAuth(async (context) => {
     orderBy: { code: "asc" },
   });
 
-  const currencyContext = await auctionCurrencyService.getAuctionCurrencyContext(
-    auctionId,
-  );
+  const currencyContext =
+    await auctionCurrencyService.getAuctionCurrencyContext(auctionId);
 
   return {
     props: {

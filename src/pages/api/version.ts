@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import * as systemService from "@/lib/services/system.service";
 import packageJson from "../../../package.json";
+import { isUpdateCheckEnabled, releasesApiUrl } from "@/lib/release-source";
 
 interface GitHubRelease {
   tag_name: string;
@@ -33,16 +34,16 @@ async function getLatestRelease(): Promise<GitHubRelease | null> {
     return cachedRelease;
   }
 
+  const url = releasesApiUrl("/releases/latest");
+  if (!url) return null;
+
   try {
-    const response = await fetch(
-      "https://api.github.com/repos/thomsa/auktiva/releases/latest",
-      {
-        headers: {
-          Accept: "application/vnd.github.v3+json",
-          "User-Agent": "Auktiva-Version-Check",
-        },
+    const response = await fetch(url, {
+      headers: {
+        Accept: "application/vnd.github.v3+json",
+        "User-Agent": "Auktiva-Version-Check",
       },
-    );
+    });
 
     if (!response.ok) {
       // If rate limited or not found, return null
@@ -86,10 +87,9 @@ export default async function handler(
     return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 
-  // Don't show update notifications on Vercel or hosted deployments
-  const isVercel = !!process.env.VERCEL;
-  const isHosted = process.env.HOSTED === "true";
-  if (isVercel || isHosted) {
+  // Don't show update notifications on hosted deployments or when no
+  // releases repo is configured (RELEASES_REPO)
+  if (!isUpdateCheckEnabled()) {
     return res.status(200).json({
       currentVersion: packageJson.version,
       latestVersion: null,

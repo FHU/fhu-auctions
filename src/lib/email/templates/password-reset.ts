@@ -1,4 +1,5 @@
 import { renderLayout, theme, escapeHtml } from "../layout";
+import { brand } from "@/config/brand";
 
 const content = `
     <mj-text font-size="22px" font-weight="600" color="${theme.colors.text.main}">
@@ -8,7 +9,7 @@ const content = `
       Hi {{NAME}},
     </mj-text>
     <mj-text>
-      We received a request to reset your password for your Auktiva account. Click the button below to create a new password.
+      We received a request to reset your password for your ${brand.appName} account. Click the button below to create a new password.
     </mj-text>
     <mj-button href="{{RESET_URL}}">
       Reset Password
@@ -30,7 +31,7 @@ const content = `
 
 export const passwordResetTemplate = renderLayout({
   title: "Reset Your Password",
-  previewText: "Reset your Auktiva password",
+  previewText: `Reset your ${brand.appName} password`,
   content,
 });
 

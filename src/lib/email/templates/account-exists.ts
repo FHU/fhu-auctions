@@ -1,4 +1,5 @@
 import { renderLayout, theme, escapeHtml } from "../layout";
+import { brand } from "@/config/brand";
 
 const content = `
     <mj-text font-size="22px" font-weight="600" color="${theme.colors.text.main}">
@@ -8,7 +9,7 @@ const content = `
       Hi {{NAME}},
     </mj-text>
     <mj-text>
-      Someone (hopefully you!) tried to create a new account on Auktiva using this email address. 
+      Someone (hopefully you!) tried to create a new account on ${brand.appName} using this email address. 
       However, you already have an account with us.
     </mj-text>
     <mj-text>
@@ -30,7 +31,7 @@ const content = `
 
 export const accountExistsTemplate = renderLayout({
   title: "Account Already Exists",
-  previewText: "You already have an Auktiva account",
+  previewText: `You already have a ${brand.appName} account`,
   content,
 });
 

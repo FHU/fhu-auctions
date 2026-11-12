@@ -52,10 +52,11 @@ body:
     id: environment
     attributes:
       label: Environment
-      description: Are you using the hosted version or self-hosting?
+      description: Where did this happen?
       options:
-        - Hosted (auktiva.org)
-        - Self-hosted
+        - Production
+        - Staging / test
+        - Local development
     validations:
       required: true
 

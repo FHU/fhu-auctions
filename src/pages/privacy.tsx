@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandLockup } from "@/components/common/BrandLockup";
 import { GetStaticProps } from "next";
 import { SEO, pageSEO } from "@/components/common";
 import { getMessages, Locale } from "@/i18n";
@@ -8,6 +9,7 @@ export default function PrivacyPage() {
   const t = useTranslations("legal.privacy");
   const tSections = useTranslations("legal.privacy.sections");
   const tCommon = useTranslations("common");
+  const tLegal = useTranslations("legal");
 
   return (
     <>
@@ -19,19 +21,11 @@ export default function PrivacyPage() {
 
       <div className="min-h-screen bg-base-100">
         {/* Navigation */}
-        <nav className="navbar bg-base-100/80 backdrop-blur-lg sticky top-0 z-50 border-b border-base-200">
+        <nav className="navbar bg-fhu-maroon text-white sticky top-0 z-50 border-b-4 border-fhu-gold">
           <div className="container mx-auto px-4">
             <div className="flex-1">
-              <Link
-                href="/"
-                className="text-2xl font-bold flex items-center gap-2 group"
-              >
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-105 transition-transform">
-                  <span className="icon-[tabler--gavel] size-6"></span>
-                </div>
-                <span className="bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent">
-                  {tCommon("appName")}
-                </span>
+              <Link href="/" aria-label={tCommon("appName")}>
+                <BrandLockup variant="white" />
               </Link>
             </div>
           </div>
@@ -43,6 +37,10 @@ export default function PrivacyPage() {
               {t("title")}
             </h1>
             <p className="text-base-content/60 text-lg">{t("lastUpdated")}</p>
+            <div role="note" className="alert alert-warning mt-8 text-left">
+              <span className="icon-[tabler--alert-triangle] size-5 shrink-0"></span>
+              <span>{tLegal("placeholderNotice")}</span>
+            </div>
           </div>
 
           <div className="space-y-12 prose prose-lg prose-headings:font-bold prose-headings:tracking-tight prose-a:text-primary max-w-none">
@@ -94,7 +92,7 @@ export default function PrivacyPage() {
                   </p>
                 </div>
                 <div className="bg-base-200/50 rounded-2xl p-6 border border-base-content/5">
-                  <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center text-accent mb-3">
+                  <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center text-secondary mb-3">
                     <span className="icon-[tabler--photo] size-6"></span>
                   </div>
                   <h3 className="font-bold text-lg mb-2">

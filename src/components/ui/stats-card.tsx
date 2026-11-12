@@ -18,7 +18,7 @@ interface StatsCardProps {
 const colorClasses = {
   primary: { bg: "bg-primary/10", text: "text-primary" },
   secondary: { bg: "bg-secondary/10", text: "text-secondary" },
-  accent: { bg: "bg-accent/10", text: "text-accent" },
+  accent: { bg: "bg-accent/10", text: "text-secondary" },
   success: { bg: "bg-success/10", text: "text-success" },
   warning: { bg: "bg-warning/10", text: "text-warning" },
   error: { bg: "bg-error/10", text: "text-error" },

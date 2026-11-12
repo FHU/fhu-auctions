@@ -14,11 +14,26 @@ PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 
 cd "$PROJECT_ROOT"
 
+# Releases repo ("owner/repo"): from the environment, or from .env
+if [ -z "$RELEASES_REPO" ] && [ -f ".env" ]; then
+  RELEASES_REPO=$(grep "^RELEASES_REPO=" .env | cut -d'=' -f2 | tr -d '"')
+fi
+
+if [ -z "$RELEASES_REPO" ]; then
+  echo "Error: RELEASES_REPO is not set. Self-update is disabled."
+  exit 1
+fi
+
+if [[ ! "$RELEASES_REPO" =~ ^[A-Za-z0-9-]+/[A-Za-z0-9._-]+$ ]]; then
+  echo "Error: Invalid RELEASES_REPO '$RELEASES_REPO'. Expected owner/repo"
+  exit 1
+fi
+
 echo ""
-echo "=== Step 1: Fetching latest release ==="
+echo "=== Step 1: Fetching latest release from $RELEASES_REPO ==="
 git fetch --tags origin
 
-LATEST_TAG=$(curl -fsSL "https://api.github.com/repos/thomsa/auktiva/releases/latest" 2>/dev/null | \
+LATEST_TAG=$(curl -fsSL "https://api.github.com/repos/${RELEASES_REPO}/releases/latest" 2>/dev/null | \
   grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
 
 if [ -z "$LATEST_TAG" ]; then

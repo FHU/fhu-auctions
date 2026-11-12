@@ -21,11 +21,13 @@ export function LanguageSwitcher({
     router.push({ pathname, query }, asPath, { locale: newLocale });
   };
 
+  // Nothing to choose when only one locale is enabled
+  if (locales.length < 2) return null;
   return (
     <div className={`dropdown dropdown-end ${className}`}>
       <label
         tabIndex={0}
-        className="btn btn-ghost btn-sm gap-1.5 hover:bg-base-content/5"
+        className="btn btn-ghost btn-sm gap-1.5 hover:bg-base-content/5 text-inherit"
       >
         <span className="text-base">{localeFlags[currentLocale]}</span>
         {!compact && (

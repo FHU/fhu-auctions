@@ -198,7 +198,7 @@ export default function ResultsPage({
 
               {userWins.length === 0 ? (
                 <div className="text-center py-12 flex flex-col items-center justify-center h-full">
-                  <div className="w-16 h-16 bg-base-100 rounded-full flex items-center justify-center mb-4 shadow-sm">
+                  <div className="w-16 h-16 bg-base-100 flex items-center justify-center mb-4 shadow-sm">
                     <span className="icon-[tabler--mood-sad] size-8 text-base-content/30"></span>
                   </div>
                   <p className="text-base-content/60 font-medium">
@@ -395,7 +395,8 @@ export default function ResultsPage({
                             <span className="font-bold font-mono text-sm sm:text-lg">
                               {formatAuctionBidDisplay({
                                 amount: win.winningBid,
-                                enteredRepresentation: win.enteredRepresentation,
+                                enteredRepresentation:
+                                  win.enteredRepresentation,
                                 profile: win.currencyProfile,
                                 fallbackSymbol: win.currencySymbol,
                               })}

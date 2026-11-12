@@ -190,7 +190,7 @@ export default function CreateAuctionPage({
             {/* Bidding Settings */}
             <div className="divider opacity-50"></div>
             <div className="space-y-4">
-              <h2 className="text-lg font-semibold flex items-center gap-2 text-accent">
+              <h2 className="text-lg font-semibold flex items-center gap-2 text-secondary">
                 <span className="icon-[tabler--gavel] size-5"></span>
                 {t("biddingSettings")}
               </h2>

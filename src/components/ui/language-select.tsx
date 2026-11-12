@@ -18,6 +18,8 @@ export function LanguageSelect({ className = "" }: LanguageSelectProps) {
     router.push({ pathname, query }, asPath, { locale: newLocale });
   };
 
+  // Nothing to choose when only one locale is enabled
+  if (locales.length < 2) return null;
   return (
     <select
       value={currentLocale}

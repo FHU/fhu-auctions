@@ -37,9 +37,11 @@ services:
       - SMTP_PORT=${SMTP_PORT:-}
       - SMTP_USER=${SMTP_USER:-}
       - SMTP_PASSWORD=${SMTP_PASSWORD:-}
-      - MAIL_FROM=${MAIL_FROM:-noreply@auktiva.org}
-      - MAIL_FROM_NAME=${MAIL_FROM_NAME:-Auktiva}
+      - MAIL_FROM=${MAIL_FROM:-}
+      - MAIL_FROM_NAME=${MAIL_FROM_NAME:-FHU Auctions}
       - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+      - NEXT_PUBLIC_SUPPORT_EMAIL=${NEXT_PUBLIC_SUPPORT_EMAIL:-}
+      - NEXT_PUBLIC_HELP_URL=${NEXT_PUBLIC_HELP_URL:-}
       - CRON_SECRET=${CRON_SECRET:-}
       # Optional: OAuth
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}

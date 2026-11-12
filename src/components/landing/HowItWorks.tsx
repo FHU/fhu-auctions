@@ -29,7 +29,7 @@ export function HowItWorks() {
             <div className="space-y-8">
               {steps.map((step, idx) => (
                 <div key={idx} className="flex gap-6 group">
-                  <div className="shrink-0 w-12 h-12 rounded-full border-2 border-base-content/20 flex items-center justify-center font-bold text-lg text-base-content/70 group-hover:border-primary group-hover:text-primary transition-colors duration-300">
+                  <div className="shrink-0 w-12 h-12 border-2 border-base-content/20 flex items-center justify-center font-bold text-lg text-base-content/70 group-hover:border-primary group-hover:text-primary transition-colors duration-300">
                     {step.num}
                   </div>
                   <div>
@@ -47,7 +47,6 @@ export function HowItWorks() {
 
           <div className="lg:w-1/2 w-full">
             <div className="relative">
-              <div className="absolute inset-0 bg-linear-to-tr from-primary/20 to-secondary/20 rounded-3xl blur-3xl"></div>
               <div className="relative bg-base-200 rounded-3xl p-8 border border-base-content/5 shadow-2xl">
                 {/* Abstract visualization of workflow */}
                 <div className="space-y-4">
@@ -64,7 +63,7 @@ export function HowItWorks() {
                   </div>
                   <div className="h-20 rounded-xl bg-base-100 p-4 flex items-center justify-between shadow-sm border border-base-content/5">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-secondary/20"></div>
+                      <div className="w-10 h-10 bg-secondary/20"></div>
                       <div className="w-32 h-3 bg-base-content/10 rounded"></div>
                     </div>
                     <div className="w-20 h-8 bg-secondary rounded text-secondary-content flex items-center justify-center text-xs font-bold">
@@ -73,7 +72,7 @@ export function HowItWorks() {
                   </div>
                   <div className="h-20 rounded-xl bg-base-100 p-4 flex items-center justify-between shadow-sm border border-base-content/5 opacity-60">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-base-content/10"></div>
+                      <div className="w-10 h-10 bg-base-content/10"></div>
                       <div className="w-32 h-3 bg-base-content/10 rounded"></div>
                     </div>
                     <div className="w-20 h-8 bg-base-content/10 rounded"></div>

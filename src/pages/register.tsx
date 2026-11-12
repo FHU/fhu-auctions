@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import Link from "next/link";
+import { BrandLockup } from "@/components/common/BrandLockup";
 import { GetServerSideProps } from "next";
 import { getServerSession } from "next-auth";
 import ReCAPTCHA from "react-google-recaptcha";
@@ -151,20 +152,14 @@ export default function RegisterPage({
         <div className="hidden lg:flex lg:w-1/2 relative bg-base-200 overflow-hidden items-center justify-center">
           {/* Background effects */}
           <div className="absolute inset-0 z-0">
-            <div className="absolute top-0 right-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[128px] animate-pulse"></div>
-            <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-secondary/20 rounded-full blur-[128px] animate-pulse delay-1000"></div>
             <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-[0.03]"></div>
           </div>
 
           <div className="relative z-10 flex flex-col items-center justify-center p-12 text-center max-w-lg">
-            <Link href="/" className="mb-8 group">
-              <div className="relative inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-base-100 shadow-2xl shadow-primary/10 border border-base-content/5 mb-6 group-hover:scale-105 transition-transform duration-300">
-                <span className="icon-[tabler--gavel] size-10 text-primary group-hover:-rotate-12 transition-transform duration-300"></span>
-              </div>
-              <h1 className="text-4xl font-extrabold tracking-tight bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent">
-                {tCommon("appName")}
-              </h1>
+            <Link href="/" aria-label={tCommon("appName")} className="mb-10">
+              <BrandLockup variant="auto" />
             </Link>
+            <h1 className="sr-only">{tCommon("appName")}</h1>
 
             <h2 className="text-2xl font-bold mb-4">{t("brandingTitle")}</h2>
             <p className="text-base-content/60 text-lg leading-relaxed">
@@ -174,22 +169,20 @@ export default function RegisterPage({
         </div>
 
         {/* Right side - Form */}
-        <div className="flex-1 lg:w-1/2 flex flex-col items-center justify-center p-6 sm:p-12 relative bg-base-100">
+        <div className="flex-1 lg:w-1/2 flex flex-col items-center justify-center p-6 pt-24 sm:p-12 sm:pt-28 lg:pt-12 relative bg-base-100">
           <Link
             href="/"
+            aria-label={tCommon("appName")}
             className="lg:hidden absolute top-8 left-6 flex items-center gap-2 hover:opacity-80 transition-opacity"
           >
-            <span className="icon-[tabler--gavel] size-6 text-primary"></span>
-            <span className="text-lg font-bold bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent">
-              {tCommon("appName")}
-            </span>
+            <BrandLockup variant="auto" size="sm" />
           </Link>
 
           <div className="w-full max-w-[400px]">
             {registrationSuccess ? (
               // Verification pending state
               <div className="text-center space-y-6">
-                <div className="w-20 h-20 bg-success/10 rounded-full flex items-center justify-center mx-auto">
+                <div className="w-20 h-20 bg-success/10 flex items-center justify-center mx-auto">
                   <span className="icon-[tabler--mail-check] size-10 text-success"></span>
                 </div>
                 <div className="space-y-2">

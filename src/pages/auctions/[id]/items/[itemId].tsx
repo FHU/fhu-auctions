@@ -514,10 +514,7 @@ export default function ItemDetailPage({
   return (
     <div className="min-h-screen bg-base-100 relative overflow-x-hidden selection:bg-primary/20">
       {/* Background decorations */}
-      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[128px] translate-x-1/3 -translate-y-1/3"></div>
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-secondary/5 rounded-full blur-[128px] -translate-x-1/3 translate-y-1/3"></div>
-      </div>
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden"></div>
 
       <div className="relative z-10 mb-5 sm:mb-0">
         <Navbar user={user} />
@@ -650,7 +647,7 @@ export default function ItemDetailPage({
                                   <span className="icon-[tabler--chevron-right] size-5"></span>
                                 </button>
                                 {/* Image Counter */}
-                                <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-md text-white text-xs px-3 py-1.5 rounded-full font-medium">
+                                <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-md text-white text-xs px-3 py-1.5 font-medium">
                                   {selectedImageIndex + 1} / {images.length}
                                 </div>
                               </>
@@ -722,7 +719,7 @@ export default function ItemDetailPage({
 
                         {bids.length === 0 ? (
                           <div className="text-center py-12 bg-base-200/30 rounded-xl border border-base-content/5 border-dashed">
-                            <div className="bg-base-200 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <div className="bg-base-200 w-12 h-12 flex items-center justify-center mx-auto mb-3">
                               <span className="icon-[tabler--gavel] size-6 text-base-content/30"></span>
                             </div>
                             <p className="text-base-content/60 font-medium">
@@ -742,7 +739,7 @@ export default function ItemDetailPage({
                               >
                                 <div className="flex items-center gap-3">
                                   <div
-                                    className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                                    className={`w-8 h-8 flex items-center justify-center ${
                                       index === 0
                                         ? "bg-primary text-primary-content"
                                         : "bg-base-300 text-base-content/60"
