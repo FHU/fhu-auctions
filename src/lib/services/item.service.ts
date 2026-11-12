@@ -216,6 +216,7 @@ export async function getItemById(
  */
 export async function getItemForDetailPage(
   itemId: string,
+  auctionId: string,
 ): Promise<ItemDetailForPage | null> {
   const item = await prisma.auctionItem.findUnique({
     where: { id: itemId },
@@ -227,7 +228,7 @@ export async function getItemForDetailPage(
     },
   });
 
-  if (!item) return null;
+  if (!item || item.auctionId !== auctionId) return null;
 
   return {
     id: item.id,
@@ -538,9 +539,14 @@ export async function getItemForEditPage(
  */
 export async function getAuctionItems(
   auctionId: string,
+  viewerId: string,
 ): Promise<AuctionItem[]> {
   return prisma.auctionItem.findMany({
-    where: { auctionId },
+    // Drafts are only visible to their creator
+    where: {
+      auctionId,
+      OR: [{ isPublished: true }, { creatorId: viewerId }],
+    },
     include: {
       currency: true,
       creator: {
@@ -838,12 +844,6 @@ export async function createItem(
   creatorId: string,
   input: CreateItemInput,
 ) {
-  // Get auction name for notifications
-  const auction = await prisma.auction.findUnique({
-    where: { id: auctionId },
-    select: { name: true },
-  });
-
   const item = await prisma.auctionItem.create({
     data: {
       auctionId,
@@ -884,6 +884,32 @@ export async function createItem(
     },
   });
 
+  // Draft items stay private: members are only told about published items
+  // (drafts are announced when they're published; see announceItemPublished)
+  if (item.isPublished) {
+    await announceItemPublished(item.id);
+  }
+
+  return item;
+}
+
+/**
+ * Tell auction members about a newly published item: "new item" emails,
+ * in-app notifications, and the realtime ITEM_CREATED event. Called when an
+ * item is created already published, or when a draft is published later.
+ * Does nothing for items that aren't published.
+ */
+export async function announceItemPublished(itemId: string): Promise<void> {
+  const item = await prisma.auctionItem.findUnique({
+    where: { id: itemId },
+    include: {
+      auction: { select: { name: true } },
+      creator: { select: { name: true } },
+      images: { orderBy: { order: "asc" }, take: 1, select: { url: true } },
+    },
+  });
+  if (!item || !item.isPublished) return;
+
   // Get the first image URL for notifications
   const appUrl = brand.siteUrl;
   const firstImageUrl =
@@ -899,15 +925,15 @@ export async function createItem(
     itemName: item.name,
     itemDescription: item.description,
     itemImageUrl: firstImageUrl,
-    auctionId,
-    auctionName: auction?.name || "Auction",
-    creatorId,
+    auctionId: item.auctionId,
+    auctionName: item.auction.name || "Auction",
+    creatorId: item.creatorId,
   });
 
   // Send in-app notifications to all auction members (except creator)
   await sendNewItemNotifications(
-    auctionId,
-    creatorId,
+    item.auctionId,
+    item.creatorId,
     item.name,
     item.description,
     firstImageUrl,
@@ -917,21 +943,19 @@ export async function createItem(
   // Publish realtime event for new item (private auction channel - members only)
   const itemCreatedEvent: ItemCreatedEvent = {
     itemId: item.id,
-    auctionId,
+    auctionId: item.auctionId,
     name: item.name,
-    creatorId,
+    creatorId: item.creatorId,
     creatorName: item.creator.name || "Unknown",
     thumbnailUrl: firstImageUrl,
     startingBid: item.startingBid,
     currencyCode: item.currencyCode,
   };
   publish(
-    Channels.privateAuction(auctionId),
+    Channels.privateAuction(item.auctionId),
     Events.ITEM_CREATED,
     itemCreatedEvent,
   );
-
-  return item;
 }
 
 /**
@@ -983,6 +1007,10 @@ export async function updateItem(
   const updateData: Record<string, unknown> = {
     lastUpdatedById: updatedById,
   };
+  const before = await prisma.auctionItem.findUnique({
+    where: { id: itemId },
+    select: { isPublished: true },
+  });
 
   // Always allowed updates
   if (input.name !== undefined) updateData.name = input.name;
@@ -1040,7 +1068,7 @@ export async function updateItem(
     }
   }
 
-  return prisma.auctionItem.update({
+  const updated = await prisma.auctionItem.update({
     where: { id: itemId },
     data: updateData,
     include: {
@@ -1050,6 +1078,13 @@ export async function updateItem(
       },
     },
   });
+
+  // A draft was just published: now tell auction members about it
+  if (before && !before.isPublished && updated.isPublished) {
+    await announceItemPublished(itemId);
+  }
+
+  return updated;
 }
 
 /**
@@ -1243,6 +1278,7 @@ export async function bulkUpdateItems(
     select: {
       id: true,
       name: true,
+      isPublished: true,
       _count: { select: { bids: true } },
     },
   });
@@ -1306,6 +1342,9 @@ export async function bulkUpdateItems(
         data: itemUpdateData,
       });
       updated++;
+      if (!item.isPublished && itemUpdateData.isPublished === true) {
+        await announceItemPublished(item.id);
+      }
     }
   }
 
