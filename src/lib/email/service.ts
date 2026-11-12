@@ -375,11 +375,12 @@ export async function queueItemWonEmail(params: {
       select: { emailOnItemWon: true },
     });
 
-    // Default is false for this notification type
-    if (userSettings?.emailOnItemWon !== true) {
+    // On by default (FHU): only skip users who explicitly turned it off.
+    // Users without a settings row get the email.
+    if (userSettings?.emailOnItemWon === false) {
       emailServiceLogger.debug(
         { itemId, winnerId },
-        "User has not enabled item won notifications, skipping",
+        "User turned off item won notifications, skipping",
       );
       return true; // Not an error, just skipped
     }
